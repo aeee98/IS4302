@@ -15,16 +15,13 @@ contract ERC20 {
     
     string public constant name = "ElectionToken";
     string public constant symbol = "ET";
-    uint8 public constant decimals = 18;
+    uint8 public constant decimals = 0;
     uint256 totalSupply_;
   
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value);
     event Mint(address indexed to, uint256 amount);
     event MintFinished();
-
-  
-
 
 
   /**
