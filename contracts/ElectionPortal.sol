@@ -1,12 +1,12 @@
 pragma solidity ^0.8.0;
 
-import "./token/ERC223.sol";
+import "./token/ERC20.sol";
 
 contract ElectionPortal {
-    ERC223Token tokenContract;
+    ERC20 tokenContract;
 
     mapping (address => bool) administrators;
 
-    
+
 
 }

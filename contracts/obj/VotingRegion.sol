@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 contract VotingRegions {
 
     address[] administrators; // eligible administrators with rights to edit the voting regions
-    address[] eligibleReferenceContracts; // eligible contracts that can modify the voting region
+    address[] eligibleReferenceContracts; // eligible contracts that can modify the voting region, not used yet
 
     mapping (string => VotingRegion) regions;
 
