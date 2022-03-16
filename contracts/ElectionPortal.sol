@@ -9,10 +9,8 @@ import "./VotingRegions.sol";
 contract ElectionPortal {
     ERC20 tokenContract;
     ElectionAdministrator administratorContract;
-    uint64 electionCount;
 
-    Election[] previousElections;
-    Election currentElection;
+    Election[] elections;
 
     modifier adminOnly {
         require(administratorContract.isAdministrator(msg.sender), "Not Administrator");
@@ -22,15 +20,15 @@ contract ElectionPortal {
     constructor(ERC20 _tokenContract, ElectionAdministrator _administratorContract) {
         tokenContract = _tokenContract;
         administratorContract = _administratorContract;
-        electionCount = 0;
     }
 
 
     function addNewElection(Election election) public adminOnly {
-        require (address(election) != address(0), "Election contract must exist");
-        currentElection = election;
+        elections.push(election);
     }
 
-    
-
+    function getLatestElection() public view returns (Election) {
+        require(elections[elections.length -1].checkEnded() == false);
+        return elections[elections.length - 1];
+    }
 }

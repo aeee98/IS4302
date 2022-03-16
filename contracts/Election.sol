@@ -7,11 +7,11 @@ contract Election {
 
     ElectionAdministrator administratorContract;
 
-    string public electionTitle;
-    uint256 public startDate;
-    uint256 public endDate;
-    bool public hasStarted; //This is used to double confirm that the election has actually started
-    bool public hasEnded; //This is used to confirm that the election has actually ended.
+    string electionTitle;
+    uint256 startDate;
+    uint256 endDate;
+    bool hasStarted; //This is used to double confirm that the election has actually started
+    bool hasEnded; //This is used to confirm that the election has actually ended.
 
     //TODO: Create the election blocks, the GRCs and stuff
 
@@ -30,6 +30,22 @@ contract Election {
         hasStarted = false; 
         hasEnded = false;
         administratorContract = _administratorContract;
+    }
+
+    function getStartDate () public view returns (uint256) {
+        return startDate;
+    }
+
+    function getEndDate () public view returns (uint256) {
+        return endDate;
+    }
+
+    function checkStarted () public view returns (bool) {
+        return hasStarted;
+    }
+
+    function checkEnded () public view returns (bool) {
+        return hasEnded;
     }
 
     function changeStartDate (uint256 newStartDate) public adminOnly {

@@ -1,0 +1,1156 @@
+{
+    "contractName": "ElectionPortal",
+    "abi": [
+        {
+            "inputs": [
+                {
+                    "internalType": "contract ERC20",
+                    "name": "_tokenContract",
+                    "type": "address"
+                },
+                {
+                    "internalType": "contract ElectionAdministrator",
+                    "name": "_administratorContract",
+                    "type": "address"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "constructor"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "contract Election",
+                    "name": "election",
+                    "type": "address"
+                }
+            ],
+            "name": "addNewElection",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "getLatestElection",
+            "outputs": [
+                {
+                    "internalType": "contract Election",
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        }
+    ],
+    "metadata": "{\"compiler\":{\"version\":\"0.8.11+commit.d7f03943\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"contract ERC20\",\"name\":\"_tokenContract\",\"type\":\"address\"},{\"internalType\":\"contract ElectionAdministrator\",\"name\":\"_administratorContract\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"contract Election\",\"name\":\"election\",\"type\":\"address\"}],\"name\":\"addNewElection\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getLatestElection\",\"outputs\":[{\"internalType\":\"contract Election\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"d:/Blockchain/Project/IS4302/contracts/ElectionPortal.sol\":\"ElectionPortal\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"d:/Blockchain/Project/IS4302/contracts/Election.sol\":{\"keccak256\":\"0x4e79039903ff0d63c194303bc1763c1d0601b33cc7f3cba520c4424c889a77a1\",\"license\":\"UNLICENSED\",\"urls\":[\"bzz-raw://f5a42c947fc7c4be505f08aee57fe65d56330752a4ae8f1c7f90e27503a5dd9f\",\"dweb:/ipfs/QmULSqNH5d2q3bSwjcNZjZBa2oXARyC4oT426qwb5EsVzn\"]},\"d:/Blockchain/Project/IS4302/contracts/ElectionAdministrator.sol\":{\"keccak256\":\"0xe9fb8154f79e26341060b49ec71fe33a5c13996766666b83435b4626dd102d03\",\"license\":\"UNLICENSED\",\"urls\":[\"bzz-raw://beafd9e422b4726cf893dadab296d02340e2663e71cf16e42ee76fe4418cfc3a\",\"dweb:/ipfs/QmWj8t47fADS4ciRuybws1Wjr1UmkfFzUefhqi2KgKGgFy\"]},\"d:/Blockchain/Project/IS4302/contracts/ElectionPortal.sol\":{\"keccak256\":\"0x30eaeb1081eeb1c69c6b2ce738b1beb763fbad4a73410f28915b85bc3f9c1065\",\"license\":\"UNLICENSED\",\"urls\":[\"bzz-raw://0a6f47046b1727fda8f9c85cb4e2d44875821f11e4c27f9fccd66559241a466b\",\"dweb:/ipfs/QmbYB6363QaVE9NacjEaXLxkCyxH1Fommf7DowNB5Lkv5A\"]},\"d:/Blockchain/Project/IS4302/contracts/VotingRegions.sol\":{\"keccak256\":\"0xe7f233e453c3bddb62417b06c81fa2ce79450d7aa17e2a969f0b1d465684cef0\",\"license\":\"UNLICENSED\",\"urls\":[\"bzz-raw://d5588db97dd3e73f26126ffc40be60fb32a7c771dd5802d4685241c5abc75ca6\",\"dweb:/ipfs/QmRfajN5KpksNpmLrfai9i9FpAabTZyos6Q5axPPDkwZBb\"]},\"d:/Blockchain/Project/IS4302/contracts/token/ERC20.sol\":{\"keccak256\":\"0x5d460360cad99ab9c119f653f8898169d63dfdacb7ee2e48ff279a394d455d21\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://40e73893ea44ec8ad299011a31609c333605524ec5d0e9788dd3059b28571c05\",\"dweb:/ipfs/QmSACbTTSmmccTQF8RPHSKgdEFe7CBfRDZKamNEDhmK6Gm\"]},\"d:/Blockchain/Project/IS4302/contracts/util/SafeMath.sol\":{\"keccak256\":\"0x8ca6870bea5eb6f7dae440f927ba9ec9a98da21bab9c3ce984021a959efa3852\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://778b218b0e19414b80d9f5b93d78249ad9e6b06846ef40a1bec3e3528f6659c3\",\"dweb:/ipfs/QmNutPC5kg4W8HnzXVpJ2KS5ykqQCi75MAtr4XJpE7ugE8\"]},\"d:/Blockchain/Project/IS4302/contracts/util/StringUtils.sol\":{\"keccak256\":\"0x76533cac475e81b5adbdc159bc03d25e92354f6b8800bacdd438cdf5ec211df8\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5aa93fa4c024361fad439cd69031289fa4014f91384588a31e355a56955ea835\",\"dweb:/ipfs/QmUhKcDbFUozn5RXuUA91phHta2CypGbiC9znHcj5NuGTq\"]}},\"version\":1}",
+    "bytecode": "608060405234801561001057600080fd5b506040516103d43803806103d483398101604081905261002f91610078565b600080546001600160a01b039384166001600160a01b031991821617909155600180549290931691161790556100b2565b6001600160a01b038116811461007557600080fd5b50565b6000806040838503121561008b57600080fd5b825161009681610060565b60208401519092506100a781610060565b809150509250929050565b610313806100c16000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c8063303f66b71461003b5780633266de5914610050575b600080fd5b61004e610049366004610250565b610074565b005b610058610176565b6040516001600160a01b03909116815260200160405180910390f35b600154604051630a2eb30160e01b81523360048201526001600160a01b0390911690630a2eb30190602401602060405180830381865afa1580156100bc573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906100e09190610280565b6101245760405162461bcd60e51b81526020600482015260116024820152702737ba1020b236b4b734b9ba3930ba37b960791b604482015260640160405180910390fd5b600280546001810182556000919091527f405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ace0180546001600160a01b0319166001600160a01b0392909216919091179055565b600280546000919061018a906001906102a2565b8154811061019a5761019a6102c7565b600091825260209182902001546040805163941799dd60e01b815290516001600160a01b039092169263941799dd926004808401938290030181865afa1580156101e8573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061020c9190610280565b1561021657600080fd5b60028054610226906001906102a2565b81548110610236576102366102c7565b6000918252602090912001546001600160a01b0316919050565b60006020828403121561026257600080fd5b81356001600160a01b038116811461027957600080fd5b9392505050565b60006020828403121561029257600080fd5b8151801515811461027957600080fd5b6000828210156102c257634e487b7160e01b600052601160045260246000fd5b500390565b634e487b7160e01b600052603260045260246000fdfea26469706673582212204943988eee892b31ba96107572ea15c82e864808a1c2d64c1d38ea0fe780c59064736f6c634300080b0033",
+    "deployedBytecode": "608060405234801561001057600080fd5b50600436106100365760003560e01c8063303f66b71461003b5780633266de5914610050575b600080fd5b61004e610049366004610250565b610074565b005b610058610176565b6040516001600160a01b03909116815260200160405180910390f35b600154604051630a2eb30160e01b81523360048201526001600160a01b0390911690630a2eb30190602401602060405180830381865afa1580156100bc573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906100e09190610280565b6101245760405162461bcd60e51b81526020600482015260116024820152702737ba1020b236b4b734b9ba3930ba37b960791b604482015260640160405180910390fd5b600280546001810182556000919091527f405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ace0180546001600160a01b0319166001600160a01b0392909216919091179055565b600280546000919061018a906001906102a2565b8154811061019a5761019a6102c7565b600091825260209182902001546040805163941799dd60e01b815290516001600160a01b039092169263941799dd926004808401938290030181865afa1580156101e8573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061020c9190610280565b1561021657600080fd5b60028054610226906001906102a2565b81548110610236576102366102c7565b6000918252602090912001546001600160a01b0316919050565b60006020828403121561026257600080fd5b81356001600160a01b038116811461027957600080fd5b9392505050565b60006020828403121561029257600080fd5b8151801515811461027957600080fd5b6000828210156102c257634e487b7160e01b600052601160045260246000fd5b500390565b634e487b7160e01b600052603260045260246000fdfea26469706673582212204943988eee892b31ba96107572ea15c82e864808a1c2d64c1d38ea0fe780c59064736f6c634300080b0033",
+    "sourceMap": "194:774:2:-:0;;;469:186;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;560:13;:30;;-1:-1:-1;;;;;560:30:2;;;-1:-1:-1;;;;;;560:30:2;;;;;;;;601:46;;;;;;;;;;;194:774;;14:138:7;-1:-1:-1;;;;;96:31:7;;86:42;;76:70;;142:1;139;132:12;76:70;14:138;:::o;157:442::-;279:6;287;340:2;328:9;319:7;315:23;311:32;308:52;;;356:1;353;346:12;308:52;388:9;382:16;407:38;439:5;407:38;:::i;:::-;514:2;499:18;;493:25;464:5;;-1:-1:-1;527:40:7;493:25;527:40;:::i;:::-;586:7;576:17;;;157:442;;;;;:::o;:::-;194:774:2;;;;;;",
+    "deployedSourceMap": "194:774:2:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;665:103;;;;;;:::i;:::-;;:::i;:::-;;776:189;;;:::i;:::-;;;-1:-1:-1;;;;;501:32:7;;;483:51;;471:2;456:18;776:189:2;;;;;;;665:103;370:21;;:49;;-1:-1:-1;;;370:49:2;;408:10;370:49;;;483:51:7;-1:-1:-1;;;;;370:21:2;;;;:37;;456:18:7;;370:49:2;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;362:79;;;;-1:-1:-1;;;362:79:2;;1237:2:7;362:79:2;;;1219:21:7;1276:2;1256:18;;;1249:30;-1:-1:-1;;;1295:18:7;;;1288:47;1352:18;;362:79:2;;;;;;;;736:9:::1;:24:::0;;::::1;::::0;::::1;::::0;;-1:-1:-1;736:24:2;;;;;::::1;::::0;;-1:-1:-1;;;;;;736:24:2::1;-1:-1:-1::0;;;;;736:24:2;;;::::1;::::0;;;::::1;::::0;;665:103::o;776:189::-;855:9;865:16;;826:8;;855:9;865:19;;883:1;;865:19;:::i;:::-;855:30;;;;;;;;:::i;:::-;;;;;;;;;;;;:43;;;-1:-1:-1;;;855:43:2;;;;-1:-1:-1;;;;;855:30:2;;;;:41;;:43;;;;;;;;;;:30;:43;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;:52;847:61;;;;;;926:9;936:16;;:20;;955:1;;936:20;:::i;:::-;926:31;;;;;;;;:::i;:::-;;;;;;;;;;;-1:-1:-1;;;;;926:31:2;;776:189;-1:-1:-1;776:189:2:o;14:302:7:-;89:6;142:2;130:9;121:7;117:23;113:32;110:52;;;158:1;155;148:12;110:52;184:23;;-1:-1:-1;;;;;236:31:7;;226:42;;216:70;;282:1;279;272:12;216:70;305:5;14:302;-1:-1:-1;;;14:302:7:o;753:277::-;820:6;873:2;861:9;852:7;848:23;844:32;841:52;;;889:1;886;879:12;841:52;921:9;915:16;974:5;967:13;960:21;953:5;950:32;940:60;;996:1;993;986:12;1381:222;1421:4;1449:1;1446;1443:8;1440:131;;;1493:10;1488:3;1484:20;1481:1;1474:31;1528:4;1525:1;1518:15;1556:4;1553:1;1546:15;1440:131;-1:-1:-1;1588:9:7;;1381:222::o;1608:127::-;1669:10;1664:3;1660:20;1657:1;1650:31;1700:4;1697:1;1690:15;1724:4;1721:1;1714:15",
+    "sourcePath": "d:/Blockchain/Project/IS4302/contracts/ElectionPortal.sol",
+    "compiler": {
+        "name": "solc",
+        "version": "0.8.11+commit.d7f03943"
+    },
+    "ast": {
+        "absolutePath": "d:/Blockchain/Project/IS4302/contracts/ElectionPortal.sol",
+        "exportedSymbols": {
+            "ERC20": [
+                1306
+            ],
+            "Election": [
+                234
+            ],
+            "ElectionAdministrator": [
+                513
+            ],
+            "ElectionPortal": [
+                603
+            ],
+            "SafeMath": [
+                1618
+            ],
+            "StringUtils": [
+                1859
+            ],
+            "VotingRegions": [
+                959
+            ]
+        },
+        "id": 604,
+        "license": "UNLICENSED",
+        "nodeType": "SourceUnit",
+        "nodes": [
+            {
+                "id": 515,
+                "literals": [
+                    "solidity",
+                    "^",
+                    "0.8",
+                    ".0"
+                ],
+                "nodeType": "PragmaDirective",
+                "src": "40:23:2"
+            },
+            {
+                "absolutePath": "d:/Blockchain/Project/IS4302/contracts/token/ERC20.sol",
+                "file": "./token/ERC20.sol",
+                "id": 516,
+                "nameLocation": "-1:-1:-1",
+                "nodeType": "ImportDirective",
+                "scope": 604,
+                "sourceUnit": 1307,
+                "src": "67:27:2",
+                "symbolAliases": [],
+                "unitAlias": ""
+            },
+            {
+                "absolutePath": "d:/Blockchain/Project/IS4302/contracts/Election.sol",
+                "file": "./Election.sol",
+                "id": 517,
+                "nameLocation": "-1:-1:-1",
+                "nodeType": "ImportDirective",
+                "scope": 604,
+                "sourceUnit": 235,
+                "src": "96:24:2",
+                "symbolAliases": [],
+                "unitAlias": ""
+            },
+            {
+                "absolutePath": "d:/Blockchain/Project/IS4302/contracts/ElectionAdministrator.sol",
+                "file": "./ElectionAdministrator.sol",
+                "id": 518,
+                "nameLocation": "-1:-1:-1",
+                "nodeType": "ImportDirective",
+                "scope": 604,
+                "sourceUnit": 514,
+                "src": "122:37:2",
+                "symbolAliases": [],
+                "unitAlias": ""
+            },
+            {
+                "absolutePath": "d:/Blockchain/Project/IS4302/contracts/VotingRegions.sol",
+                "file": "./VotingRegions.sol",
+                "id": 519,
+                "nameLocation": "-1:-1:-1",
+                "nodeType": "ImportDirective",
+                "scope": 604,
+                "sourceUnit": 960,
+                "src": "161:29:2",
+                "symbolAliases": [],
+                "unitAlias": ""
+            },
+            {
+                "abstract": false,
+                "baseContracts": [],
+                "canonicalName": "ElectionPortal",
+                "contractDependencies": [],
+                "contractKind": "contract",
+                "fullyImplemented": true,
+                "id": 603,
+                "linearizedBaseContracts": [
+                    603
+                ],
+                "name": "ElectionPortal",
+                "nameLocation": "203:14:2",
+                "nodeType": "ContractDefinition",
+                "nodes": [
+                    {
+                        "constant": false,
+                        "id": 522,
+                        "mutability": "mutable",
+                        "name": "tokenContract",
+                        "nameLocation": "231:13:2",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 603,
+                        "src": "225:19:2",
+                        "stateVariable": true,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                            "typeIdentifier": "t_contract$_ERC20_$1306",
+                            "typeString": "contract ERC20"
+                        },
+                        "typeName": {
+                            "id": 521,
+                            "nodeType": "UserDefinedTypeName",
+                            "pathNode": {
+                                "id": 520,
+                                "name": "ERC20",
+                                "nodeType": "IdentifierPath",
+                                "referencedDeclaration": 1306,
+                                "src": "225:5:2"
+                            },
+                            "referencedDeclaration": 1306,
+                            "src": "225:5:2",
+                            "typeDescriptions": {
+                                "typeIdentifier": "t_contract$_ERC20_$1306",
+                                "typeString": "contract ERC20"
+                            }
+                        },
+                        "visibility": "internal"
+                    },
+                    {
+                        "constant": false,
+                        "id": 525,
+                        "mutability": "mutable",
+                        "name": "administratorContract",
+                        "nameLocation": "273:21:2",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 603,
+                        "src": "251:43:2",
+                        "stateVariable": true,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                            "typeIdentifier": "t_contract$_ElectionAdministrator_$513",
+                            "typeString": "contract ElectionAdministrator"
+                        },
+                        "typeName": {
+                            "id": 524,
+                            "nodeType": "UserDefinedTypeName",
+                            "pathNode": {
+                                "id": 523,
+                                "name": "ElectionAdministrator",
+                                "nodeType": "IdentifierPath",
+                                "referencedDeclaration": 513,
+                                "src": "251:21:2"
+                            },
+                            "referencedDeclaration": 513,
+                            "src": "251:21:2",
+                            "typeDescriptions": {
+                                "typeIdentifier": "t_contract$_ElectionAdministrator_$513",
+                                "typeString": "contract ElectionAdministrator"
+                            }
+                        },
+                        "visibility": "internal"
+                    },
+                    {
+                        "constant": false,
+                        "id": 529,
+                        "mutability": "mutable",
+                        "name": "elections",
+                        "nameLocation": "314:9:2",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 603,
+                        "src": "303:20:2",
+                        "stateVariable": true,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_contract$_Election_$234_$dyn_storage",
+                            "typeString": "contract Election[]"
+                        },
+                        "typeName": {
+                            "baseType": {
+                                "id": 527,
+                                "nodeType": "UserDefinedTypeName",
+                                "pathNode": {
+                                    "id": 526,
+                                    "name": "Election",
+                                    "nodeType": "IdentifierPath",
+                                    "referencedDeclaration": 234,
+                                    "src": "303:8:2"
+                                },
+                                "referencedDeclaration": 234,
+                                "src": "303:8:2",
+                                "typeDescriptions": {
+                                    "typeIdentifier": "t_contract$_Election_$234",
+                                    "typeString": "contract Election"
+                                }
+                            },
+                            "id": 528,
+                            "nodeType": "ArrayTypeName",
+                            "src": "303:10:2",
+                            "typeDescriptions": {
+                                "typeIdentifier": "t_array$_t_contract$_Election_$234_$dyn_storage_ptr",
+                                "typeString": "contract Election[]"
+                            }
+                        },
+                        "visibility": "internal"
+                    },
+                    {
+                        "body": {
+                            "id": 541,
+                            "nodeType": "Block",
+                            "src": "351:110:2",
+                            "statements": [
+                                {
+                                    "expression": {
+                                        "arguments": [
+                                            {
+                                                "arguments": [
+                                                    {
+                                                        "expression": {
+                                                            "id": 534,
+                                                            "name": "msg",
+                                                            "nodeType": "Identifier",
+                                                            "overloadedDeclarations": [],
+                                                            "referencedDeclaration": 4294967281,
+                                                            "src": "408:3:2",
+                                                            "typeDescriptions": {
+                                                                "typeIdentifier": "t_magic_message",
+                                                                "typeString": "msg"
+                                                            }
+                                                        },
+                                                        "id": 535,
+                                                        "isConstant": false,
+                                                        "isLValue": false,
+                                                        "isPure": false,
+                                                        "lValueRequested": false,
+                                                        "memberName": "sender",
+                                                        "nodeType": "MemberAccess",
+                                                        "src": "408:10:2",
+                                                        "typeDescriptions": {
+                                                            "typeIdentifier": "t_address",
+                                                            "typeString": "address"
+                                                        }
+                                                    }
+                                                ],
+                                                "expression": {
+                                                    "argumentTypes": [
+                                                        {
+                                                            "typeIdentifier": "t_address",
+                                                            "typeString": "address"
+                                                        }
+                                                    ],
+                                                    "expression": {
+                                                        "id": 532,
+                                                        "name": "administratorContract",
+                                                        "nodeType": "Identifier",
+                                                        "overloadedDeclarations": [],
+                                                        "referencedDeclaration": 525,
+                                                        "src": "370:21:2",
+                                                        "typeDescriptions": {
+                                                            "typeIdentifier": "t_contract$_ElectionAdministrator_$513",
+                                                            "typeString": "contract ElectionAdministrator"
+                                                        }
+                                                    },
+                                                    "id": 533,
+                                                    "isConstant": false,
+                                                    "isLValue": false,
+                                                    "isPure": false,
+                                                    "lValueRequested": false,
+                                                    "memberName": "isAdministrator",
+                                                    "nodeType": "MemberAccess",
+                                                    "referencedDeclaration": 512,
+                                                    "src": "370:37:2",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_function_external_view$_t_address_$returns$_t_bool_$",
+                                                        "typeString": "function (address) view external returns (bool)"
+                                                    }
+                                                },
+                                                "id": 536,
+                                                "isConstant": false,
+                                                "isLValue": false,
+                                                "isPure": false,
+                                                "kind": "functionCall",
+                                                "lValueRequested": false,
+                                                "names": [],
+                                                "nodeType": "FunctionCall",
+                                                "src": "370:49:2",
+                                                "tryCall": false,
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_bool",
+                                                    "typeString": "bool"
+                                                }
+                                            },
+                                            {
+                                                "hexValue": "4e6f742041646d696e6973747261746f72",
+                                                "id": 537,
+                                                "isConstant": false,
+                                                "isLValue": false,
+                                                "isPure": true,
+                                                "kind": "string",
+                                                "lValueRequested": false,
+                                                "nodeType": "Literal",
+                                                "src": "421:19:2",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_stringliteral_44421ce5a60ba6a05c8b077b6c9881909bf6533a85c7b3ec583c6ce6428eb492",
+                                                    "typeString": "literal_string \"Not Administrator\""
+                                                },
+                                                "value": "Not Administrator"
+                                            }
+                                        ],
+                                        "expression": {
+                                            "argumentTypes": [
+                                                {
+                                                    "typeIdentifier": "t_bool",
+                                                    "typeString": "bool"
+                                                },
+                                                {
+                                                    "typeIdentifier": "t_stringliteral_44421ce5a60ba6a05c8b077b6c9881909bf6533a85c7b3ec583c6ce6428eb492",
+                                                    "typeString": "literal_string \"Not Administrator\""
+                                                }
+                                            ],
+                                            "id": 531,
+                                            "name": "require",
+                                            "nodeType": "Identifier",
+                                            "overloadedDeclarations": [
+                                                4294967278,
+                                                4294967278
+                                            ],
+                                            "referencedDeclaration": 4294967278,
+                                            "src": "362:7:2",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+                                                "typeString": "function (bool,string memory) pure"
+                                            }
+                                        },
+                                        "id": 538,
+                                        "isConstant": false,
+                                        "isLValue": false,
+                                        "isPure": false,
+                                        "kind": "functionCall",
+                                        "lValueRequested": false,
+                                        "names": [],
+                                        "nodeType": "FunctionCall",
+                                        "src": "362:79:2",
+                                        "tryCall": false,
+                                        "typeDescriptions": {
+                                            "typeIdentifier": "t_tuple$__$",
+                                            "typeString": "tuple()"
+                                        }
+                                    },
+                                    "id": 539,
+                                    "nodeType": "ExpressionStatement",
+                                    "src": "362:79:2"
+                                },
+                                {
+                                    "id": 540,
+                                    "nodeType": "PlaceholderStatement",
+                                    "src": "452:1:2"
+                                }
+                            ]
+                        },
+                        "id": 542,
+                        "name": "adminOnly",
+                        "nameLocation": "341:9:2",
+                        "nodeType": "ModifierDefinition",
+                        "parameters": {
+                            "id": 530,
+                            "nodeType": "ParameterList",
+                            "parameters": [],
+                            "src": "351:0:2"
+                        },
+                        "src": "332:129:2",
+                        "virtual": false,
+                        "visibility": "internal"
+                    },
+                    {
+                        "body": {
+                            "id": 559,
+                            "nodeType": "Block",
+                            "src": "549:106:2",
+                            "statements": [
+                                {
+                                    "expression": {
+                                        "id": 553,
+                                        "isConstant": false,
+                                        "isLValue": false,
+                                        "isPure": false,
+                                        "lValueRequested": false,
+                                        "leftHandSide": {
+                                            "id": 551,
+                                            "name": "tokenContract",
+                                            "nodeType": "Identifier",
+                                            "overloadedDeclarations": [],
+                                            "referencedDeclaration": 522,
+                                            "src": "560:13:2",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_contract$_ERC20_$1306",
+                                                "typeString": "contract ERC20"
+                                            }
+                                        },
+                                        "nodeType": "Assignment",
+                                        "operator": "=",
+                                        "rightHandSide": {
+                                            "id": 552,
+                                            "name": "_tokenContract",
+                                            "nodeType": "Identifier",
+                                            "overloadedDeclarations": [],
+                                            "referencedDeclaration": 545,
+                                            "src": "576:14:2",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_contract$_ERC20_$1306",
+                                                "typeString": "contract ERC20"
+                                            }
+                                        },
+                                        "src": "560:30:2",
+                                        "typeDescriptions": {
+                                            "typeIdentifier": "t_contract$_ERC20_$1306",
+                                            "typeString": "contract ERC20"
+                                        }
+                                    },
+                                    "id": 554,
+                                    "nodeType": "ExpressionStatement",
+                                    "src": "560:30:2"
+                                },
+                                {
+                                    "expression": {
+                                        "id": 557,
+                                        "isConstant": false,
+                                        "isLValue": false,
+                                        "isPure": false,
+                                        "lValueRequested": false,
+                                        "leftHandSide": {
+                                            "id": 555,
+                                            "name": "administratorContract",
+                                            "nodeType": "Identifier",
+                                            "overloadedDeclarations": [],
+                                            "referencedDeclaration": 525,
+                                            "src": "601:21:2",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_contract$_ElectionAdministrator_$513",
+                                                "typeString": "contract ElectionAdministrator"
+                                            }
+                                        },
+                                        "nodeType": "Assignment",
+                                        "operator": "=",
+                                        "rightHandSide": {
+                                            "id": 556,
+                                            "name": "_administratorContract",
+                                            "nodeType": "Identifier",
+                                            "overloadedDeclarations": [],
+                                            "referencedDeclaration": 548,
+                                            "src": "625:22:2",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_contract$_ElectionAdministrator_$513",
+                                                "typeString": "contract ElectionAdministrator"
+                                            }
+                                        },
+                                        "src": "601:46:2",
+                                        "typeDescriptions": {
+                                            "typeIdentifier": "t_contract$_ElectionAdministrator_$513",
+                                            "typeString": "contract ElectionAdministrator"
+                                        }
+                                    },
+                                    "id": 558,
+                                    "nodeType": "ExpressionStatement",
+                                    "src": "601:46:2"
+                                }
+                            ]
+                        },
+                        "id": 560,
+                        "implemented": true,
+                        "kind": "constructor",
+                        "modifiers": [],
+                        "name": "",
+                        "nameLocation": "-1:-1:-1",
+                        "nodeType": "FunctionDefinition",
+                        "parameters": {
+                            "id": 549,
+                            "nodeType": "ParameterList",
+                            "parameters": [
+                                {
+                                    "constant": false,
+                                    "id": 545,
+                                    "mutability": "mutable",
+                                    "name": "_tokenContract",
+                                    "nameLocation": "487:14:2",
+                                    "nodeType": "VariableDeclaration",
+                                    "scope": 560,
+                                    "src": "481:20:2",
+                                    "stateVariable": false,
+                                    "storageLocation": "default",
+                                    "typeDescriptions": {
+                                        "typeIdentifier": "t_contract$_ERC20_$1306",
+                                        "typeString": "contract ERC20"
+                                    },
+                                    "typeName": {
+                                        "id": 544,
+                                        "nodeType": "UserDefinedTypeName",
+                                        "pathNode": {
+                                            "id": 543,
+                                            "name": "ERC20",
+                                            "nodeType": "IdentifierPath",
+                                            "referencedDeclaration": 1306,
+                                            "src": "481:5:2"
+                                        },
+                                        "referencedDeclaration": 1306,
+                                        "src": "481:5:2",
+                                        "typeDescriptions": {
+                                            "typeIdentifier": "t_contract$_ERC20_$1306",
+                                            "typeString": "contract ERC20"
+                                        }
+                                    },
+                                    "visibility": "internal"
+                                },
+                                {
+                                    "constant": false,
+                                    "id": 548,
+                                    "mutability": "mutable",
+                                    "name": "_administratorContract",
+                                    "nameLocation": "525:22:2",
+                                    "nodeType": "VariableDeclaration",
+                                    "scope": 560,
+                                    "src": "503:44:2",
+                                    "stateVariable": false,
+                                    "storageLocation": "default",
+                                    "typeDescriptions": {
+                                        "typeIdentifier": "t_contract$_ElectionAdministrator_$513",
+                                        "typeString": "contract ElectionAdministrator"
+                                    },
+                                    "typeName": {
+                                        "id": 547,
+                                        "nodeType": "UserDefinedTypeName",
+                                        "pathNode": {
+                                            "id": 546,
+                                            "name": "ElectionAdministrator",
+                                            "nodeType": "IdentifierPath",
+                                            "referencedDeclaration": 513,
+                                            "src": "503:21:2"
+                                        },
+                                        "referencedDeclaration": 513,
+                                        "src": "503:21:2",
+                                        "typeDescriptions": {
+                                            "typeIdentifier": "t_contract$_ElectionAdministrator_$513",
+                                            "typeString": "contract ElectionAdministrator"
+                                        }
+                                    },
+                                    "visibility": "internal"
+                                }
+                            ],
+                            "src": "480:68:2"
+                        },
+                        "returnParameters": {
+                            "id": 550,
+                            "nodeType": "ParameterList",
+                            "parameters": [],
+                            "src": "549:0:2"
+                        },
+                        "scope": 603,
+                        "src": "469:186:2",
+                        "stateMutability": "nonpayable",
+                        "virtual": false,
+                        "visibility": "public"
+                    },
+                    {
+                        "body": {
+                            "id": 574,
+                            "nodeType": "Block",
+                            "src": "725:43:2",
+                            "statements": [
+                                {
+                                    "expression": {
+                                        "arguments": [
+                                            {
+                                                "id": 571,
+                                                "name": "election",
+                                                "nodeType": "Identifier",
+                                                "overloadedDeclarations": [],
+                                                "referencedDeclaration": 563,
+                                                "src": "751:8:2",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_contract$_Election_$234",
+                                                    "typeString": "contract Election"
+                                                }
+                                            }
+                                        ],
+                                        "expression": {
+                                            "argumentTypes": [
+                                                {
+                                                    "typeIdentifier": "t_contract$_Election_$234",
+                                                    "typeString": "contract Election"
+                                                }
+                                            ],
+                                            "expression": {
+                                                "id": 568,
+                                                "name": "elections",
+                                                "nodeType": "Identifier",
+                                                "overloadedDeclarations": [],
+                                                "referencedDeclaration": 529,
+                                                "src": "736:9:2",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_array$_t_contract$_Election_$234_$dyn_storage",
+                                                    "typeString": "contract Election[] storage ref"
+                                                }
+                                            },
+                                            "id": 570,
+                                            "isConstant": false,
+                                            "isLValue": false,
+                                            "isPure": false,
+                                            "lValueRequested": false,
+                                            "memberName": "push",
+                                            "nodeType": "MemberAccess",
+                                            "src": "736:14:2",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_function_arraypush_nonpayable$_t_array$_t_contract$_Election_$234_$dyn_storage_ptr_$_t_contract$_Election_$234_$returns$__$bound_to$_t_array$_t_contract$_Election_$234_$dyn_storage_ptr_$",
+                                                "typeString": "function (contract Election[] storage pointer,contract Election)"
+                                            }
+                                        },
+                                        "id": 572,
+                                        "isConstant": false,
+                                        "isLValue": false,
+                                        "isPure": false,
+                                        "kind": "functionCall",
+                                        "lValueRequested": false,
+                                        "names": [],
+                                        "nodeType": "FunctionCall",
+                                        "src": "736:24:2",
+                                        "tryCall": false,
+                                        "typeDescriptions": {
+                                            "typeIdentifier": "t_tuple$__$",
+                                            "typeString": "tuple()"
+                                        }
+                                    },
+                                    "id": 573,
+                                    "nodeType": "ExpressionStatement",
+                                    "src": "736:24:2"
+                                }
+                            ]
+                        },
+                        "functionSelector": "303f66b7",
+                        "id": 575,
+                        "implemented": true,
+                        "kind": "function",
+                        "modifiers": [
+                            {
+                                "id": 566,
+                                "kind": "modifierInvocation",
+                                "modifierName": {
+                                    "id": 565,
+                                    "name": "adminOnly",
+                                    "nodeType": "IdentifierPath",
+                                    "referencedDeclaration": 542,
+                                    "src": "715:9:2"
+                                },
+                                "nodeType": "ModifierInvocation",
+                                "src": "715:9:2"
+                            }
+                        ],
+                        "name": "addNewElection",
+                        "nameLocation": "674:14:2",
+                        "nodeType": "FunctionDefinition",
+                        "parameters": {
+                            "id": 564,
+                            "nodeType": "ParameterList",
+                            "parameters": [
+                                {
+                                    "constant": false,
+                                    "id": 563,
+                                    "mutability": "mutable",
+                                    "name": "election",
+                                    "nameLocation": "698:8:2",
+                                    "nodeType": "VariableDeclaration",
+                                    "scope": 575,
+                                    "src": "689:17:2",
+                                    "stateVariable": false,
+                                    "storageLocation": "default",
+                                    "typeDescriptions": {
+                                        "typeIdentifier": "t_contract$_Election_$234",
+                                        "typeString": "contract Election"
+                                    },
+                                    "typeName": {
+                                        "id": 562,
+                                        "nodeType": "UserDefinedTypeName",
+                                        "pathNode": {
+                                            "id": 561,
+                                            "name": "Election",
+                                            "nodeType": "IdentifierPath",
+                                            "referencedDeclaration": 234,
+                                            "src": "689:8:2"
+                                        },
+                                        "referencedDeclaration": 234,
+                                        "src": "689:8:2",
+                                        "typeDescriptions": {
+                                            "typeIdentifier": "t_contract$_Election_$234",
+                                            "typeString": "contract Election"
+                                        }
+                                    },
+                                    "visibility": "internal"
+                                }
+                            ],
+                            "src": "688:19:2"
+                        },
+                        "returnParameters": {
+                            "id": 567,
+                            "nodeType": "ParameterList",
+                            "parameters": [],
+                            "src": "725:0:2"
+                        },
+                        "scope": 603,
+                        "src": "665:103:2",
+                        "stateMutability": "nonpayable",
+                        "virtual": false,
+                        "visibility": "public"
+                    },
+                    {
+                        "body": {
+                            "id": 601,
+                            "nodeType": "Block",
+                            "src": "836:129:2",
+                            "statements": [
+                                {
+                                    "expression": {
+                                        "arguments": [
+                                            {
+                                                "commonType": {
+                                                    "typeIdentifier": "t_bool",
+                                                    "typeString": "bool"
+                                                },
+                                                "id": 591,
+                                                "isConstant": false,
+                                                "isLValue": false,
+                                                "isPure": false,
+                                                "lValueRequested": false,
+                                                "leftExpression": {
+                                                    "arguments": [],
+                                                    "expression": {
+                                                        "argumentTypes": [],
+                                                        "expression": {
+                                                            "baseExpression": {
+                                                                "id": 582,
+                                                                "name": "elections",
+                                                                "nodeType": "Identifier",
+                                                                "overloadedDeclarations": [],
+                                                                "referencedDeclaration": 529,
+                                                                "src": "855:9:2",
+                                                                "typeDescriptions": {
+                                                                    "typeIdentifier": "t_array$_t_contract$_Election_$234_$dyn_storage",
+                                                                    "typeString": "contract Election[] storage ref"
+                                                                }
+                                                            },
+                                                            "id": 587,
+                                                            "indexExpression": {
+                                                                "commonType": {
+                                                                    "typeIdentifier": "t_uint256",
+                                                                    "typeString": "uint256"
+                                                                },
+                                                                "id": 586,
+                                                                "isConstant": false,
+                                                                "isLValue": false,
+                                                                "isPure": false,
+                                                                "lValueRequested": false,
+                                                                "leftExpression": {
+                                                                    "expression": {
+                                                                        "id": 583,
+                                                                        "name": "elections",
+                                                                        "nodeType": "Identifier",
+                                                                        "overloadedDeclarations": [],
+                                                                        "referencedDeclaration": 529,
+                                                                        "src": "865:9:2",
+                                                                        "typeDescriptions": {
+                                                                            "typeIdentifier": "t_array$_t_contract$_Election_$234_$dyn_storage",
+                                                                            "typeString": "contract Election[] storage ref"
+                                                                        }
+                                                                    },
+                                                                    "id": 584,
+                                                                    "isConstant": false,
+                                                                    "isLValue": false,
+                                                                    "isPure": false,
+                                                                    "lValueRequested": false,
+                                                                    "memberName": "length",
+                                                                    "nodeType": "MemberAccess",
+                                                                    "src": "865:16:2",
+                                                                    "typeDescriptions": {
+                                                                        "typeIdentifier": "t_uint256",
+                                                                        "typeString": "uint256"
+                                                                    }
+                                                                },
+                                                                "nodeType": "BinaryOperation",
+                                                                "operator": "-",
+                                                                "rightExpression": {
+                                                                    "hexValue": "31",
+                                                                    "id": 585,
+                                                                    "isConstant": false,
+                                                                    "isLValue": false,
+                                                                    "isPure": true,
+                                                                    "kind": "number",
+                                                                    "lValueRequested": false,
+                                                                    "nodeType": "Literal",
+                                                                    "src": "883:1:2",
+                                                                    "typeDescriptions": {
+                                                                        "typeIdentifier": "t_rational_1_by_1",
+                                                                        "typeString": "int_const 1"
+                                                                    },
+                                                                    "value": "1"
+                                                                },
+                                                                "src": "865:19:2",
+                                                                "typeDescriptions": {
+                                                                    "typeIdentifier": "t_uint256",
+                                                                    "typeString": "uint256"
+                                                                }
+                                                            },
+                                                            "isConstant": false,
+                                                            "isLValue": true,
+                                                            "isPure": false,
+                                                            "lValueRequested": false,
+                                                            "nodeType": "IndexAccess",
+                                                            "src": "855:30:2",
+                                                            "typeDescriptions": {
+                                                                "typeIdentifier": "t_contract$_Election_$234",
+                                                                "typeString": "contract Election"
+                                                            }
+                                                        },
+                                                        "id": 588,
+                                                        "isConstant": false,
+                                                        "isLValue": false,
+                                                        "isPure": false,
+                                                        "lValueRequested": false,
+                                                        "memberName": "checkEnded",
+                                                        "nodeType": "MemberAccess",
+                                                        "referencedDeclaration": 123,
+                                                        "src": "855:41:2",
+                                                        "typeDescriptions": {
+                                                            "typeIdentifier": "t_function_external_view$__$returns$_t_bool_$",
+                                                            "typeString": "function () view external returns (bool)"
+                                                        }
+                                                    },
+                                                    "id": 589,
+                                                    "isConstant": false,
+                                                    "isLValue": false,
+                                                    "isPure": false,
+                                                    "kind": "functionCall",
+                                                    "lValueRequested": false,
+                                                    "names": [],
+                                                    "nodeType": "FunctionCall",
+                                                    "src": "855:43:2",
+                                                    "tryCall": false,
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_bool",
+                                                        "typeString": "bool"
+                                                    }
+                                                },
+                                                "nodeType": "BinaryOperation",
+                                                "operator": "==",
+                                                "rightExpression": {
+                                                    "hexValue": "66616c7365",
+                                                    "id": 590,
+                                                    "isConstant": false,
+                                                    "isLValue": false,
+                                                    "isPure": true,
+                                                    "kind": "bool",
+                                                    "lValueRequested": false,
+                                                    "nodeType": "Literal",
+                                                    "src": "902:5:2",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_bool",
+                                                        "typeString": "bool"
+                                                    },
+                                                    "value": "false"
+                                                },
+                                                "src": "855:52:2",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_bool",
+                                                    "typeString": "bool"
+                                                }
+                                            }
+                                        ],
+                                        "expression": {
+                                            "argumentTypes": [
+                                                {
+                                                    "typeIdentifier": "t_bool",
+                                                    "typeString": "bool"
+                                                }
+                                            ],
+                                            "id": 581,
+                                            "name": "require",
+                                            "nodeType": "Identifier",
+                                            "overloadedDeclarations": [
+                                                4294967278,
+                                                4294967278
+                                            ],
+                                            "referencedDeclaration": 4294967278,
+                                            "src": "847:7:2",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
+                                                "typeString": "function (bool) pure"
+                                            }
+                                        },
+                                        "id": 592,
+                                        "isConstant": false,
+                                        "isLValue": false,
+                                        "isPure": false,
+                                        "kind": "functionCall",
+                                        "lValueRequested": false,
+                                        "names": [],
+                                        "nodeType": "FunctionCall",
+                                        "src": "847:61:2",
+                                        "tryCall": false,
+                                        "typeDescriptions": {
+                                            "typeIdentifier": "t_tuple$__$",
+                                            "typeString": "tuple()"
+                                        }
+                                    },
+                                    "id": 593,
+                                    "nodeType": "ExpressionStatement",
+                                    "src": "847:61:2"
+                                },
+                                {
+                                    "expression": {
+                                        "baseExpression": {
+                                            "id": 594,
+                                            "name": "elections",
+                                            "nodeType": "Identifier",
+                                            "overloadedDeclarations": [],
+                                            "referencedDeclaration": 529,
+                                            "src": "926:9:2",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_array$_t_contract$_Election_$234_$dyn_storage",
+                                                "typeString": "contract Election[] storage ref"
+                                            }
+                                        },
+                                        "id": 599,
+                                        "indexExpression": {
+                                            "commonType": {
+                                                "typeIdentifier": "t_uint256",
+                                                "typeString": "uint256"
+                                            },
+                                            "id": 598,
+                                            "isConstant": false,
+                                            "isLValue": false,
+                                            "isPure": false,
+                                            "lValueRequested": false,
+                                            "leftExpression": {
+                                                "expression": {
+                                                    "id": 595,
+                                                    "name": "elections",
+                                                    "nodeType": "Identifier",
+                                                    "overloadedDeclarations": [],
+                                                    "referencedDeclaration": 529,
+                                                    "src": "936:9:2",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_array$_t_contract$_Election_$234_$dyn_storage",
+                                                        "typeString": "contract Election[] storage ref"
+                                                    }
+                                                },
+                                                "id": 596,
+                                                "isConstant": false,
+                                                "isLValue": false,
+                                                "isPure": false,
+                                                "lValueRequested": false,
+                                                "memberName": "length",
+                                                "nodeType": "MemberAccess",
+                                                "src": "936:16:2",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_uint256",
+                                                    "typeString": "uint256"
+                                                }
+                                            },
+                                            "nodeType": "BinaryOperation",
+                                            "operator": "-",
+                                            "rightExpression": {
+                                                "hexValue": "31",
+                                                "id": 597,
+                                                "isConstant": false,
+                                                "isLValue": false,
+                                                "isPure": true,
+                                                "kind": "number",
+                                                "lValueRequested": false,
+                                                "nodeType": "Literal",
+                                                "src": "955:1:2",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_rational_1_by_1",
+                                                    "typeString": "int_const 1"
+                                                },
+                                                "value": "1"
+                                            },
+                                            "src": "936:20:2",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_uint256",
+                                                "typeString": "uint256"
+                                            }
+                                        },
+                                        "isConstant": false,
+                                        "isLValue": true,
+                                        "isPure": false,
+                                        "lValueRequested": false,
+                                        "nodeType": "IndexAccess",
+                                        "src": "926:31:2",
+                                        "typeDescriptions": {
+                                            "typeIdentifier": "t_contract$_Election_$234",
+                                            "typeString": "contract Election"
+                                        }
+                                    },
+                                    "functionReturnParameters": 580,
+                                    "id": 600,
+                                    "nodeType": "Return",
+                                    "src": "919:38:2"
+                                }
+                            ]
+                        },
+                        "functionSelector": "3266de59",
+                        "id": 602,
+                        "implemented": true,
+                        "kind": "function",
+                        "modifiers": [],
+                        "name": "getLatestElection",
+                        "nameLocation": "785:17:2",
+                        "nodeType": "FunctionDefinition",
+                        "parameters": {
+                            "id": 576,
+                            "nodeType": "ParameterList",
+                            "parameters": [],
+                            "src": "802:2:2"
+                        },
+                        "returnParameters": {
+                            "id": 580,
+                            "nodeType": "ParameterList",
+                            "parameters": [
+                                {
+                                    "constant": false,
+                                    "id": 579,
+                                    "mutability": "mutable",
+                                    "name": "",
+                                    "nameLocation": "-1:-1:-1",
+                                    "nodeType": "VariableDeclaration",
+                                    "scope": 602,
+                                    "src": "826:8:2",
+                                    "stateVariable": false,
+                                    "storageLocation": "default",
+                                    "typeDescriptions": {
+                                        "typeIdentifier": "t_contract$_Election_$234",
+                                        "typeString": "contract Election"
+                                    },
+                                    "typeName": {
+                                        "id": 578,
+                                        "nodeType": "UserDefinedTypeName",
+                                        "pathNode": {
+                                            "id": 577,
+                                            "name": "Election",
+                                            "nodeType": "IdentifierPath",
+                                            "referencedDeclaration": 234,
+                                            "src": "826:8:2"
+                                        },
+                                        "referencedDeclaration": 234,
+                                        "src": "826:8:2",
+                                        "typeDescriptions": {
+                                            "typeIdentifier": "t_contract$_Election_$234",
+                                            "typeString": "contract Election"
+                                        }
+                                    },
+                                    "visibility": "internal"
+                                }
+                            ],
+                            "src": "825:10:2"
+                        },
+                        "scope": 603,
+                        "src": "776:189:2",
+                        "stateMutability": "view",
+                        "virtual": false,
+                        "visibility": "public"
+                    }
+                ],
+                "scope": 604,
+                "src": "194:774:2",
+                "usedErrors": []
+            }
+        ],
+        "src": "40:928:2"
+    },
+    "functionHashes": {
+        "addNewElection(address)": "303f66b7",
+        "getLatestElection()": "3266de59"
+    },
+    "gasEstimates": {
+        "creation": {
+            "codeDepositCost": "157400",
+            "executionCost": "infinite",
+            "totalCost": "infinite"
+        },
+        "external": {
+            "addNewElection(address)": "infinite",
+            "getLatestElection()": "infinite"
+        }
+    }
+}

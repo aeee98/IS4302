@@ -69,7 +69,7 @@ contract VotingRegions {
     }
 
     function editRegionCode(string memory oldCode, string memory newCode) public adminOnly {
-         for (uint i = 0; i < regions.length; ++i) {
+        for (uint i = 0; i < regions.length; ++i) {
             if (StringUtils.equal(oldCode, regions[i].regionCode)) {
                 regions[i].regionCode = newCode;
                 emit RegionCodeChanged(oldCode, newCode);
@@ -92,4 +92,3 @@ contract VotingRegions {
         emit RegionNotFound(regionCode);
     }
 }
-
