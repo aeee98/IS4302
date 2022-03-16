@@ -10,6 +10,8 @@ contract VotingRegions {
 
     event RegionCreated(string regionName, string regionCode,string regionDescription, string RegionInformation);
     event RegionAlreadyExists(string regionName, string regionCode);
+    event RegionCodeChanged(string oldCode, string newCode);
+    event RegionRemoved(string regionCode);
 
     modifier adminOnly {
         require(administratorContract.isAdministrator(msg.sender), "Not Administrator");
@@ -52,7 +54,7 @@ contract VotingRegions {
         revert("No region with code " + regionCode + " found.");
     }
 
-    function editRegion (string memory regionCode, string memory _regionName, string memory _regionDescription, string memory _regionInformation) public adminOnly {
+    function editRegion(string memory regionCode, string memory _regionName, string memory _regionDescription, string memory _regionInformation) public adminOnly {
         for (uint i = 0; i < regions.length; ++i) {
             if (StringUtils.equal(regionCode, regions[i].regionCode)) {
                 regions[i].regionName = _regionName;
@@ -65,7 +67,23 @@ contract VotingRegions {
     }
 
     function editRegionCode(string memory oldCode, string memory newCode) public adminOnly {
+         for (uint i = 0; i < regions.length; ++i) {
+            if (StringUtils.equal(oldCode, regions[i].regionCode)) {
+                regions[i].regionCode = newCode;
+                emit RegionCodeChanged(oldCode, newCode);
+                return;
+            }
+        }
+        revert("No region with code " + regionCode + " found.");
+    }
 
+    function deleteRegion(string memory regionCode) public adminOnly {
+        if (StringUtils.equal(regionCode, regions[i].regionCode)) {
+            //Unordered Pop
+            regions[i] = regions[regions.length - 1];
+            regions.pop();
+            emit RegionRemoved(regionCode);
+        }
     }
 }
 
