@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
 import "./ElectionAdministrator.sol";
@@ -22,6 +23,7 @@ contract Election {
     constructor(string memory _electionTitle, uint256 _startDate, uint256 _endDate, ElectionAdministrator _administratorContract) {
         require(_startDate > block.timestamp, "Error, Start Date has passed.");
         require(_endDate > _startDate, "Error, End Date cannot be before start date.");
+        require (bytes(_electionTitle).length > 0, "Error, must include election title");
         electionTitle = _electionTitle;
         _startDate = _startDate;
         _endDate = _endDate;

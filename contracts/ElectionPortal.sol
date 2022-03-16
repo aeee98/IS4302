@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
 import "./token/ERC20.sol";
@@ -13,12 +14,23 @@ contract ElectionPortal {
     Election[] previousElections;
     Election currentElection;
 
-    constructor(ERC20 _tokenContract) {
+    modifier adminOnly {
+        require(administratorContract.isAdministrator(msg.sender), "Not Administrator");
+        _;
+    }
+
+    constructor(ERC20 _tokenContract, ElectionAdministrator _administratorContract) {
         tokenContract = _tokenContract;
+        administratorContract = _administratorContract;
         electionCount = 0;
     }
 
 
+    function addNewElection(Election election) public adminOnly {
+        require (address(election) != address(0), "Election contract must exist");
+        currentElection = election;
+    }
 
+    
 
 }
