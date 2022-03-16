@@ -15,6 +15,7 @@ contract VotingRegions {
 
     modifier adminOnly {
         require(administratorContract.isAdministrator(msg.sender), "Not Administrator");
+        _;
     }
 
     constructor() {

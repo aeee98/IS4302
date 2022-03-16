@@ -2,24 +2,22 @@ pragma solidity ^0.8.0;
 
 import "./token/ERC20.sol";
 import "./Election.sol";
+import "./ElectionAdministrator.sol";
+import "./VotingRegions.sol";
 
 contract ElectionPortal {
     ERC20 tokenContract;
-
-    mapping (address => bool) administrators;
+    ElectionAdministrator administratorContract;
     uint64 electionCount;
 
     Election[] previousElections;
     Election currentElection;
 
-    constructor() {
-        administrators[msg.sender] = true;
+    constructor(ERC20 _tokenContract) {
+        tokenContract = _tokenContract;
+        electionCount = 0;
     }
 
-    modifier adminOnly {
-        require (administrators[msg.sender], "Admin Only");
-        _;
-    }
 
 
 
