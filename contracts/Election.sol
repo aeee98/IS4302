@@ -39,9 +39,9 @@ contract Election {
     mapping(bytes32 => bytes32) private voters; //Hashed nric to hashed password
     mapping(bytes32 => Region) private voterRegions; //Hashed nric to Region
     mapping(uint256 => Region) private voteValidity; //voteCode to Region 
-    mapping(uint256 => Candidate) private votes; //voteCode to Candidate
+    mapping(uint256 => bytes32) private votes; //voteCode to Candidate
 
-
+    event VoteSucceeded();
 
     //TODO: Create the election blocks, the GRCs and stuff
 
@@ -96,8 +96,11 @@ contract Election {
         }
         require(found == true, "Error, invalid candidateId");
 
-        votes[_voteCode] = keccak256(_voteCode, _candidateId); //Encrypt vote
-        voteCodes.push(_voteCode); //Voted
+        votes[_voteCode] = keccak256(abi.encodePacked(_candidateId)); //Encrypt candidate id only
+
+        //Set vote to be invalid
+        emit VoteSucceeded();
+        //voteCodes.push(_voteCode); //Voted
     }
 
     function getStartDate() public view returns (uint256) {
