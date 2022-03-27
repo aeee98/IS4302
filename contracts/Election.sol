@@ -39,11 +39,9 @@ contract Election {
     mapping(bytes32 => bytes32) private voters; //Hashed nric to hashed password
     mapping(bytes32 => Region) private voterRegions; //Hashed nric to Region
     mapping(uint256 => Region) private voteValidity; //voteCode to Region 
-    mapping(uint256 => bytes32) private votes; //voteCode to Candidate
+    mapping(uint256 => bytes32) private votes; //voteCode to hashed Candidate
 
     event VoteSucceeded();
-
-    //TODO: Create the election blocks, the GRCs and stuff
 
     modifier adminOnly {
         require(administratorContract.isAdministrator(msg.sender), "Not Administrator");
@@ -65,7 +63,7 @@ contract Election {
     function addCandidate(string memory _name, uint256 _regionId, string memory _electionTitle) public adminOnly {
         candidatesCount++;
         candidates[candidatesCount] = Candidate(candidatesCount, _name, 0, _regionId, _electionTitle, true);
-        //Region[_regionId] = candidatesCount;
+        regions[_regionId].candidatesList.push(candidatesCount);
     }
 
     function addRegion(string memory _name, string memory _electionTitle) public adminOnly {
@@ -85,6 +83,7 @@ contract Election {
 
     function vote(uint256 _voteCode, uint256 _candidateId) public {
         require(voteValidity[_voteCode].valid, "Error, voteCode is not valid");
+        require(votes[_voteCode] == 0, "Error, vote has already been cast");
 
         uint256[] memory voterRegionCandidates = voteValidity[_voteCode].candidatesList;
         bool found = false;
@@ -98,7 +97,6 @@ contract Election {
 
         votes[_voteCode] = keccak256(abi.encodePacked(_candidateId)); //Encrypt candidate id only
 
-        //Set vote to be invalid
         emit VoteSucceeded();
         //voteCodes.push(_voteCode); //Voted
     }
