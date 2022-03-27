@@ -12,11 +12,11 @@ contract Election {
     uint256 endDate;
     bool hasStarted; //This is used to double confirm that the election has actually started
     bool hasEnded; //This is used to confirm that the election has actually ended
-    unit256 candidatesCount;
+    uint256 candidatesCount;
     uint256 regionsCount;
     string[] voteCodes;
 
-    struct Candidate {
+    struct Candidate {  
         uint256 id;
         string name;
         uint256 voteCount;
@@ -28,7 +28,7 @@ contract Election {
         uint256 regionId;
         string name;
         uint256 voteCount;
-        unint256[] candidatesList;
+        uint256[] candidatesList;
         string electionTitle;
     }
 
@@ -69,11 +69,11 @@ contract Election {
         regions[regionsCount] = Region(regionsCount, _name, 0, [], _electionTitle);
     }
 
-    function authenticateVoter(string _nric, string _password) public returns (uint256) {
+    function authenticateVoter(string memory _nric, string memory _password) public returns (uint256) {
         require(voters[keccak256(_nric)] == keccak256(_password), "Error, authentication failure");
         
-        Region voterRegion = voterRegions[keccak256(_nric)];
-        unint256 voteCode = uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, _nric)));
+        Region memory voterRegion = voterRegions[keccak256(_nric)];
+        uint256 voteCode = uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, _nric)));
         voteValidity[voteCode] = voterRegion;
         return voteCode;
     }
@@ -81,7 +81,7 @@ contract Election {
     function vote(uint256 _voteCode, uint256 _candidateId) public {
         require(voteValidity[_voteCode] != 0, "Error, voteCode is not valid");
 
-        voterRegionCandidates = voteValidity[_voteCode].candidatesList;
+        uint256[] memory voterRegionCandidates = voteValidity[_voteCode].candidatesList;
         bool found = false;
         for (uint i=0; i<voterRegionCandidates.length; i++) {
             if(voterRegionCandidates[i] == _candidateId) {
