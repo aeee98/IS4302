@@ -1,13 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-import "./token/ERC20.sol";
 import "./Election.sol";
 import "./ElectionAdministrator.sol";
 import "./VotingRegions.sol";
 
 contract ElectionPortal {
-    ERC20 tokenContract;
     ElectionAdministrator administratorContract;
 
     Election[] elections;
@@ -17,8 +15,7 @@ contract ElectionPortal {
         _;
     }
 
-    constructor(ERC20 _tokenContract, ElectionAdministrator _administratorContract) {
-        tokenContract = _tokenContract;
+    constructor(ElectionAdministrator _administratorContract) {
         administratorContract = _administratorContract;
     }
 
