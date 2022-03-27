@@ -22,6 +22,7 @@ contract Election {
         uint256 voteCount;
         uint256 grcId;
         string electionTitle;
+        bool valid;
     }
 
     struct Region {
@@ -30,6 +31,7 @@ contract Election {
         uint256 voteCount;
         uint256[] candidatesList;
         string electionTitle;
+        bool valid;
     }
 
     mapping(uint256 => Candidate) public candidates;
@@ -38,6 +40,8 @@ contract Election {
     mapping(bytes32 => Region) private voterRegions; //Hashed nric to Region
     mapping(uint256 => Region) private voteValidity; //voteCode to Region 
     mapping(uint256 => Candidate) private votes; //voteCode to Candidate
+
+
 
     //TODO: Create the election blocks, the GRCs and stuff
 
@@ -58,28 +62,29 @@ contract Election {
         administratorContract = _administratorContract;
     }
 
-    function addCandidate(string memory _name, uint256 _regionId, string memory _electionTitle) public {
+    function addCandidate(string memory _name, uint256 _regionId, string memory _electionTitle) public adminOnly {
         candidatesCount++;
-        candidates[candidatesCount] = Candidate(candidatesCount, _name, 0, _regionId, _electionTitle);
-        Region[_regionId] = candidatesCount;
+        candidates[candidatesCount] = Candidate(candidatesCount, _name, 0, _regionId, _electionTitle, true);
+        //Region[_regionId] = candidatesCount;
     }
 
-    function addRegion(string memory _name, string memory _electionTitle) public {
+    function addRegion(string memory _name, string memory _electionTitle) public adminOnly {
+        uint256[] storage candidatesList;
         regionsCount++;
-        regions[regionsCount] = Region(regionsCount, _name, 0, [], _electionTitle);
+        regions[regionsCount] = Region(regionsCount, _name, 0, candidatesList, _electionTitle, true);
     }
 
     function authenticateVoter(string memory _nric, string memory _password) public returns (uint256) {
-        require(voters[keccak256(_nric)] == keccak256(_password), "Error, authentication failure");
+        require(voters[keccak256(abi.encodePacked(_nric))] == keccak256(abi.encodePacked(_password)), "Error, authentication failure");
         
-        Region memory voterRegion = voterRegions[keccak256(_nric)];
+        Region memory voterRegion = voterRegions[keccak256(abi.encodePacked(_nric))];
         uint256 voteCode = uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, _nric)));
         voteValidity[voteCode] = voterRegion;
         return voteCode;
     }
 
     function vote(uint256 _voteCode, uint256 _candidateId) public {
-        require(voteValidity[_voteCode] != 0, "Error, voteCode is not valid");
+        require(voteValidity[_voteCode].valid, "Error, voteCode is not valid");
 
         uint256[] memory voterRegionCandidates = voteValidity[_voteCode].candidatesList;
         bool found = false;
