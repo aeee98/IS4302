@@ -69,7 +69,7 @@ contract Election {
     }
 
     function addRegion(string memory _name, string memory _electionTitle) public adminOnly {
-        uint256[] storage candidatesList;
+        uint256[] memory candidatesList;
         regionsCount++;
         regions[regionsCount] = Region(regionsCount, _name, 0, candidatesList, _electionTitle, true);
     }
