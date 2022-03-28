@@ -40,7 +40,8 @@ contract Election {
     mapping(bytes32 => Region) private voterRegions; //Hashed nric to Region
     mapping(uint256 => Region) private voteValidity; //voteCode to Region 
     mapping(uint256 => bytes32) private votes; //voteCode to Candidate. Votes are still needed for verification purposes even with counts accounted for, probably only by admins.
-    mapping(uint256 => uint32) private votecounts; // In a more practical standpoint, I don't think 5 million rows of retrieval is practical on one transaction. I will just add this mapping.
+    mapping(uint256 => mapping(uint256 => uint64)) private votecounts; // In a more practical standpoint, I don't think 5 million rows of retrieval is practical on one transaction. I will just add this mapping.
+    
 
     event VoteSucceeded();
 
