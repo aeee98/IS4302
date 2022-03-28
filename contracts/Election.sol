@@ -39,7 +39,6 @@ contract Election {
     mapping(bytes32 => bytes32) private voters; //Hashed nric to hashed password
     mapping(bytes32 => Region) private voterRegions; //Hashed nric to Region
     mapping(uint256 => Region) private voteValidity; //voteCode to Region 
-<<<<<<< HEAD
     mapping(uint256 => bytes32) private votes; //voteCode to Candidate. Votes are still needed for verification purposes even with counts accounted for, probably only by admins.
     mapping(uint256 => uint32) private votecounts; // In a more practical standpoint, I don't think 5 million rows of retrieval is practical on one transaction. I will just add this mapping.
 
@@ -47,12 +46,6 @@ contract Election {
 
     //TODO: Handle Voting Process
 
-=======
-    mapping(uint256 => bytes32) private votes; //voteCode to hashed Candidate
-
-    event VoteSucceeded();
-
->>>>>>> e4b61314c7962f9c81c445c017a8db49e71932bb
     modifier adminOnly {
         require(administratorContract.isAdministrator(msg.sender), "Not Administrator");
         _;
@@ -93,12 +86,9 @@ contract Election {
 
     function vote(uint256 _voteCode, uint256 _candidateId) public {
         require(voteValidity[_voteCode].valid, "Error, voteCode is not valid");
-<<<<<<< HEAD
         require(block.timestamp > startDate && block.timestamp < endDate && hasStarted == true && hasEnded == false, "Error, not available for voting");
-=======
         require(votes[_voteCode] == 0, "Error, vote has already been cast");
 
->>>>>>> e4b61314c7962f9c81c445c017a8db49e71932bb
         uint256[] memory voterRegionCandidates = voteValidity[_voteCode].candidatesList;
         bool found = false;
         for (uint i=0; i<voterRegionCandidates.length; i++) {
