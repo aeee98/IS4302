@@ -40,8 +40,8 @@ contract Election {
     mapping(bytes32 => Region) private voterRegions; //Hashed nric to Region
     mapping(uint256 => Region) private voteValidity; //voteCode to Region 
     mapping(uint256 => bytes32) private votes; //voteCode to Candidate. Votes are still needed for verification purposes even with counts accounted for, probably only by admins.
-    mapping(uint256 => mapping(uint256 => uint64)) private votecounts; // In a more practical standpoint, I don't think 5 million rows of retrieval is practical on one transaction. I will just add this mapping.
-    
+    mapping(uint256 => mapping(uint256 => uint64)) private votecounts; // counts => Region -> votes 
+
 
     event VoteSucceeded();
 
@@ -88,7 +88,7 @@ contract Election {
     function vote(uint256 _voteCode, uint256 _candidateId) public {
         require(voteValidity[_voteCode].valid, "Error, voteCode is not valid");
         require(block.timestamp > startDate && block.timestamp < endDate && hasStarted == true && hasEnded == false, "Error, not available for voting");
-        require(votes[_voteCode] == 0, "Error, vote has already been cast");
+        require(votes[_voteCode] == bytes32(0), "Error, vote has already been cast");
 
         uint256[] memory voterRegionCandidates = voteValidity[_voteCode].candidatesList;
         bool found = false;
@@ -103,7 +103,10 @@ contract Election {
         votes[_voteCode] = keccak256(abi.encodePacked(_candidateId)); //Encrypt candidate id only
 
         emit VoteSucceeded();
-        //voteCodes.push(_voteCode); //Voted
+        //voteCodes.(_voteCode); //Voted
+        // add the count of the vote
+
+        
     }
 
     function getStartDate() public view returns (uint256) {
