@@ -47,7 +47,7 @@ contract Election {
 
     event VoteSucceeded();
 
-    event ElectionWinner(string region, string candidate);
+    event ElectionWinner(string region, string candidate, uint256 votes);
 
     //TODO: Handle Voting Process
 
@@ -181,6 +181,8 @@ contract Election {
         require(results.length == 0, "Results already settled");
 
         for (uint i = 0; i < regionsCount; i++) {
+            //Handle Results on a per region basis.
+            
             
         }
 
@@ -191,6 +193,8 @@ contract Election {
         require(hasEnded, "has not ended yet");
         require(results.length > 0, "Results not set up yet");
 
+
+        return "lol"; //TODO: Ignore this
     }
 
     function getRegion(uint256 id) public view returns (Region memory) {
