@@ -5,16 +5,16 @@ import "./ElectionAdministrator.sol";
 
 contract Election {
 
-    ElectionAdministrator administratorContract;
+    ElectionAdministrator private administratorContract;
 
-    string electionTitle;
-    uint256 startDate;
-    uint256 endDate;
-    bool hasStarted; //This is used to double confirm that the election has actually started
-    bool hasEnded; //This is used to confirm that the election has actually ended
-    uint256 candidatesCount;
-    uint256 regionsCount;
-    string[] voteCodes;
+    string private electionTitle;
+    uint256 private startDate;
+    uint256 private endDate;
+    bool private hasStarted; //This is used to double confirm that the election has actually started
+    bool private hasEnded; //This is used to confirm that the election has actually ended
+    uint256 private candidatesCount;
+    uint256 private regionsCount;
+    string[] private voteCodes;
 
     struct Candidate {  
         uint256 id;

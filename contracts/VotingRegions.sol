@@ -4,9 +4,10 @@ pragma solidity ^0.8.0;
 import "./ElectionAdministrator.sol";
 import "./util/StringUtils.sol";
 
+//MAY NOT BE USED, take note
 contract VotingRegions {
-    address[] eligibleReferenceContracts; // eligible contracts that can modify the voting region, not used yet
-    ElectionAdministrator administratorContract;
+    address[] private eligibleReferenceContracts; // eligible contracts that can modify the voting region, not used yet
+    ElectionAdministrator private administratorContract;
     VotingRegion[] regions;
 
     event RegionCreated(string regionName, string regionCode,string regionDescription, string RegionInformation);
