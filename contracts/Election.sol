@@ -36,8 +36,9 @@ contract Election {
     mapping(uint256 => Candidate) public candidates;
     mapping(uint256 => Region) public regions;
     mapping(bytes32 => bytes32) private voters; //Hashed nric to hashed password
-    mapping(bytes32 => Region) private voterRegions; //Hashed nric to Region
-    mapping(uint256 => Region) private voteValidity; //voteCode to Region 
+    mapping(bytes32 => bool) private hasRegisteredVote; //Hashed nric to true/false value, by default it is false.
+    mapping(bytes32 => uint256) private voterRegions; //Hashed nric to Region
+    mapping(uint256 => uint256) private voteValidity; //voteCode to Region 
     mapping(uint256 => bytes32) private votes; //voteCode to Candidate. Votes are still needed for verification purposes even with counts accounted for, probably only by admins.
     mapping(bytes32 => mapping(bytes32 => uint32)) private votecounts; // Region => Candidate -> votes 
 
@@ -94,19 +95,23 @@ contract Election {
      */
     function authenticateVoter(string memory _nric, string memory _password) public returns (uint256) {
         require(voters[keccak256(abi.encodePacked(_nric))] == keccak256(abi.encodePacked(_password)), "Error, authentication failure");
-        
-        Region memory voterRegion = voterRegions[keccak256(abi.encodePacked(_nric))];
+        require(hasRegisteredVote[keccak256(abi.encodePacked(_nric))] == false, "Has already voted");
+        uint256 regionid = voterRegions[keccak256(abi.encodePacked(_nric))];
+        Region memory voterRegion = regions[regionid];
+
+        require(voterRegion.valid, "Invalid Region");
         uint256 voteCode = uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, _nric)));
-        voteValidity[voteCode] = voterRegion;
+        hasRegisteredVote[keccak256(abi.encodePacked(_nric))] = true;
+        voteValidity[voteCode] = regionid;
         return voteCode;
     }
 
     function vote(uint256 _voteCode, uint256 _candidateId) public {
-        require(voteValidity[_voteCode].valid, "Error, voteCode is not valid");
-        require(block.timestamp > startDate && block.timestamp < endDate && hasStarted == true && hasEnded == false, "Error, not available for voting");
+        require(voteValidity[_voteCode] > 0, "Error, voteCode is not valid");
+        require(hasStarted == true && hasEnded == false, "Error, not available for voting");
         require(votes[_voteCode] == bytes32(0), "Error, vote has already been cast");
 
-        uint256[] memory voterRegionCandidates = voteValidity[_voteCode].candidatesList;
+        uint256[] memory voterRegionCandidates = regions[voteValidity[_voteCode]].candidatesList;
         bool found = false;
         for (uint i=0; i<voterRegionCandidates.length; i++) {
             if(voterRegionCandidates[i] == _candidateId) {
@@ -122,7 +127,7 @@ contract Election {
         //voteCodes.(_voteCode); //Voted
         //add vote to count.
 
-        
+        votecounts[keccak256(abi.encode(voteValidity[_voteCode]))][keccak256(abi.encodePacked(_candidateId))] += 1;
     }
 
     function getStartDate() public view returns (uint256) {
@@ -176,7 +181,7 @@ contract Election {
         require(results.length == 0, "Results already settled");
 
         for (uint i = 0; i < regionsCount; i++) {
-
+            
         }
 
         return results;
