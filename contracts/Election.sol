@@ -12,14 +12,13 @@ contract Election {
     uint256 private endDate;
     bool private hasStarted; //This is used to double confirm that the election has actually started
     bool private hasEnded; //This is used to confirm that the election has actually ended
-    uint256 private candidatesCount;
-    uint256 private regionsCount;
+    uint32 private candidatesCount;
+    uint32 private regionsCount;
     string[] private voteCodes;
 
     struct Candidate {  
         uint256 id;
         string name;
-        uint256 voteCount;
         uint256 grcId;
         string electionTitle;
         bool valid;
@@ -40,15 +39,29 @@ contract Election {
     mapping(bytes32 => Region) private voterRegions; //Hashed nric to Region
     mapping(uint256 => Region) private voteValidity; //voteCode to Region 
     mapping(uint256 => bytes32) private votes; //voteCode to Candidate. Votes are still needed for verification purposes even with counts accounted for, probably only by admins.
-    mapping(uint256 => mapping(uint256 => uint64)) private votecounts; // counts => Region -> votes 
+    mapping(bytes32 => mapping(bytes32 => uint32)) private votecounts; // Region => Candidate -> votes 
+
+    string[][] private results;
 
 
     event VoteSucceeded();
+
+    event ElectionWinner(string region, string candidate);
 
     //TODO: Handle Voting Process
 
     modifier adminOnly {
         require(administratorContract.isAdministrator(msg.sender), "Not Administrator");
+        _;
+    }
+
+    modifier hasNotStarted {
+        require(hasStarted == false);
+        _;
+    }
+
+    modifier alreadyStarted {
+        require(hasStarted == true);
         _;
     }
 
@@ -64,18 +77,21 @@ contract Election {
         administratorContract = _administratorContract;
     }
 
-    function addCandidate(string memory _name, uint256 _regionId, string memory _electionTitle) public adminOnly {
+    function addCandidate(string memory _name, uint256 _regionId, string memory _electionTitle) public adminOnly hasNotStarted {
         candidatesCount++;
-        candidates[candidatesCount] = Candidate(candidatesCount, _name, 0, _regionId, _electionTitle, true);
+        candidates[candidatesCount] = Candidate(candidatesCount, _name, _regionId, _electionTitle, true);
         regions[_regionId].candidatesList.push(candidatesCount);
     }
 
-    function addRegion(string memory _name, string memory _electionTitle) public adminOnly {
+    function addRegion(string memory _name, string memory _electionTitle) public adminOnly hasNotStarted {
         uint256[] memory candidatesList;
         regionsCount++;
         regions[regionsCount] = Region(regionsCount, _name, 0, candidatesList, _electionTitle, true);
     }
 
+    /*
+     * @dev Authenticates the voter, generates the vote code and gives it to user. 
+     */
     function authenticateVoter(string memory _nric, string memory _password) public returns (uint256) {
         require(voters[keccak256(abi.encodePacked(_nric))] == keccak256(abi.encodePacked(_password)), "Error, authentication failure");
         
@@ -104,7 +120,7 @@ contract Election {
 
         emit VoteSucceeded();
         //voteCodes.(_voteCode); //Voted
-        // add the count of the vote
+        //add vote to count.
 
         
     }
@@ -157,10 +173,22 @@ contract Election {
     //Gets winner of election.
     function settleResults() public adminOnly returns (string[][] memory) {
         require(hasEnded == true, "Result not available yet");
+        require(results.length == 0, "Results already settled");
 
-        string[][] memory resultmap;
+        for (uint i = 0; i < regionsCount; i++) {
 
+        }
 
-        return resultmap;
+        return results;
+    }
+
+    function getWinner(string memory _grcCode) public view returns (string memory) {
+        require(hasEnded, "has not ended yet");
+        require(results.length > 0, "Results not set up yet");
+
+    }
+
+    function getRegion(uint256 id) public view returns (Region memory) {
+        return regions[id];
     }
 }
