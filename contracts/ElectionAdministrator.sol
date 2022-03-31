@@ -71,7 +71,7 @@ contract ElectionAdministrator {
         address removedBy = administratorsPendingRemoval[administratorToRemove];
         administratorsPendingRemoval[administratorToRemove] = address(0);
 
-        emit AdministratorApprovedRemoval(administratorToRemove, removedBy, msg.sender);
+        emit AdministratorRejectRemoval(administratorToRemove, removedBy, msg.sender);
     }
 
     function isAdministrator(address check) public view returns (bool) {

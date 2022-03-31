@@ -24,4 +24,20 @@ contract("ElectionAdministrator", function(accounts) {
         let addAdmin3 = await ElectionAdministratorInstance.addAdministrator(accounts[1], {from: accounts[2]});
         truffleAssert.eventEmitted(addAdmin3, 'AdministratorAlreadyExists');
     })
+
+    it("Removing admin approval", async () => {
+        let removeAdmin1 = await ElectionAdministratorInstance.setPendingRemoval(accounts[2], {from: accounts[1]});
+        let approveRemove1 = await ElectionAdministratorInstance.approveRemoval(accounts[2], {from: accounts[0]});
+        truffleAssert.eventEmitted(approveRemove1, 'AdministratorApprovedRemoval');
+    })
+
+    it("Removing admin rejection", async () => {
+        let addAdmin = await ElectionAdministratorInstance.addAdministrator(accounts[3], {from: accounts[0]});
+        let removeAdmin = await ElectionAdministratorInstance.setPendingRemoval(accounts[3], {from: accounts[1]});
+        let rejectRemove1 = await ElectionAdministratorInstance.rejectRemoval(accounts[3], {from: accounts[0]});
+        truffleAssert.eventEmitted(rejectRemove1, 'AdministratorRejectRemoval');
+    })
+
+    
+
 })
