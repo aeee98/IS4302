@@ -5,21 +5,20 @@ import "./ElectionAdministrator.sol";
 
 contract Election {
 
-    ElectionAdministrator administratorContract;
+    ElectionAdministrator private administratorContract;
 
-    string electionTitle;
-    uint256 startDate;
-    uint256 endDate;
-    bool hasStarted; //This is used to double confirm that the election has actually started
-    bool hasEnded; //This is used to confirm that the election has actually ended
-    uint256 candidatesCount;
-    uint256 regionsCount;
-    string[] voteCodes;
+    string private electionTitle;
+    uint256 private startDate;
+    uint256 private endDate;
+    bool private hasStarted; //This is used to double confirm that the election has actually started
+    bool private hasEnded; //This is used to confirm that the election has actually ended
+    uint32 private candidatesCount;
+    uint32 private regionsCount;
+    string[] private voteCodes;
 
     struct Candidate {  
         uint256 id;
         string name;
-        uint256 voteCount;
         uint256 grcId;
         string electionTitle;
         bool valid;
@@ -37,17 +36,33 @@ contract Election {
     mapping(uint256 => Candidate) public candidates;
     mapping(uint256 => Region) public regions;
     mapping(bytes32 => bytes32) private voters; //Hashed nric to hashed password
-    mapping(bytes32 => Region) private voterRegions; //Hashed nric to Region
-    mapping(uint256 => Region) private voteValidity; //voteCode to Region 
+    mapping(bytes32 => bool) private hasRegisteredVote; //Hashed nric to true/false value, by default it is false.
+    mapping(bytes32 => uint256) private voterRegions; //Hashed nric to Region
+    mapping(uint256 => uint256) private voteValidity; //voteCode to Region 
     mapping(uint256 => bytes32) private votes; //voteCode to Candidate. Votes are still needed for verification purposes even with counts accounted for, probably only by admins.
-    mapping(uint256 => uint32) private votecounts; // In a more practical standpoint, I don't think 5 million rows of retrieval is practical on one transaction. I will just add this mapping.
+    mapping(bytes32 => mapping(bytes32 => uint32)) private votecounts; // Region => Candidate -> votes 
+
+    string[][] private results;
+
 
     event VoteSucceeded();
+
+    event ElectionWinner(string region, string candidate, uint256 votes);
 
     //TODO: Handle Voting Process
 
     modifier adminOnly {
         require(administratorContract.isAdministrator(msg.sender), "Not Administrator");
+        _;
+    }
+
+    modifier hasNotStarted {
+        require(hasStarted == false);
+        _;
+    }
+
+    modifier alreadyStarted {
+        require(hasStarted == true);
         _;
     }
 
@@ -63,33 +78,40 @@ contract Election {
         administratorContract = _administratorContract;
     }
 
-    function addCandidate(string memory _name, uint256 _regionId, string memory _electionTitle) public adminOnly {
+    function addCandidate(string memory _name, uint256 _regionId, string memory _electionTitle) public adminOnly hasNotStarted {
         candidatesCount++;
-        candidates[candidatesCount] = Candidate(candidatesCount, _name, 0, _regionId, _electionTitle, true);
+        candidates[candidatesCount] = Candidate(candidatesCount, _name, _regionId, _electionTitle, true);
         regions[_regionId].candidatesList.push(candidatesCount);
     }
 
-    function addRegion(string memory _name, string memory _electionTitle) public adminOnly {
+    function addRegion(string memory _name, string memory _electionTitle) public adminOnly hasNotStarted {
         uint256[] memory candidatesList;
         regionsCount++;
         regions[regionsCount] = Region(regionsCount, _name, 0, candidatesList, _electionTitle, true);
     }
 
+    /*
+     * @dev Authenticates the voter, generates the vote code and gives it to user. 
+     */
     function authenticateVoter(string memory _nric, string memory _password) public returns (uint256) {
         require(voters[keccak256(abi.encodePacked(_nric))] == keccak256(abi.encodePacked(_password)), "Error, authentication failure");
-        
-        Region memory voterRegion = voterRegions[keccak256(abi.encodePacked(_nric))];
+        require(hasRegisteredVote[keccak256(abi.encodePacked(_nric))] == false, "Has already voted");
+        uint256 regionid = voterRegions[keccak256(abi.encodePacked(_nric))];
+        Region memory voterRegion = regions[regionid];
+
+        require(voterRegion.valid, "Invalid Region");
         uint256 voteCode = uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, _nric)));
-        voteValidity[voteCode] = voterRegion;
+        hasRegisteredVote[keccak256(abi.encodePacked(_nric))] = true;
+        voteValidity[voteCode] = regionid;
         return voteCode;
     }
 
     function vote(uint256 _voteCode, uint256 _candidateId) public {
-        require(voteValidity[_voteCode].valid, "Error, voteCode is not valid");
-        require(block.timestamp > startDate && block.timestamp < endDate && hasStarted == true && hasEnded == false, "Error, not available for voting");
-        require(votes[_voteCode] == 0, "Error, vote has already been cast");
+        require(voteValidity[_voteCode] > 0, "Error, voteCode is not valid");
+        require(hasStarted == true && hasEnded == false, "Error, not available for voting");
+        require(votes[_voteCode] == bytes32(0), "Error, vote has already been cast");
 
-        uint256[] memory voterRegionCandidates = voteValidity[_voteCode].candidatesList;
+        uint256[] memory voterRegionCandidates = regions[voteValidity[_voteCode]].candidatesList;
         bool found = false;
         for (uint i=0; i<voterRegionCandidates.length; i++) {
             if(voterRegionCandidates[i] == _candidateId) {
@@ -102,7 +124,10 @@ contract Election {
         votes[_voteCode] = keccak256(abi.encodePacked(_candidateId)); //Encrypt candidate id only
 
         emit VoteSucceeded();
-        //voteCodes.push(_voteCode); //Voted
+        //voteCodes.(_voteCode); //Voted
+        //add vote to count.
+
+        votecounts[keccak256(abi.encode(voteValidity[_voteCode]))][keccak256(abi.encodePacked(_candidateId))] += 1;
     }
 
     function getStartDate() public view returns (uint256) {
@@ -153,10 +178,26 @@ contract Election {
     //Gets winner of election.
     function settleResults() public adminOnly returns (string[][] memory) {
         require(hasEnded == true, "Result not available yet");
+        require(results.length == 0, "Results already settled");
 
-        string[][] memory resultmap;
+        for (uint i = 0; i < regionsCount; i++) {
+            //Handle Results on a per region basis.
+            
+            
+        }
+
+        return results;
+    }
+
+    function getWinner(string memory _grcCode) public view returns (string memory) {
+        require(hasEnded, "has not ended yet");
+        require(results.length > 0, "Results not set up yet");
 
 
-        return resultmap;
+        return "lol"; //TODO: Ignore this
+    }
+
+    function getRegion(uint256 id) public view returns (Region memory) {
+        return regions[id];
     }
 }

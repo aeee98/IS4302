@@ -6,9 +6,9 @@ import "./ElectionAdministrator.sol";
 import "./VotingRegions.sol";
 
 contract ElectionPortal {
-    ElectionAdministrator administratorContract;
+    ElectionAdministrator private administratorContract;
 
-    Election[] elections;
+    Election[] private elections;
 
     modifier adminOnly {
         require(administratorContract.isAdministrator(msg.sender), "Not Administrator");

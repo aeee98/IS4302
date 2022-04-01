@@ -40,13 +40,14 @@ contract("ElectionAdministrator", function(accounts) {
 
     it("cannot remove any more admins if <= 2 admins", async () => {
         //let addAdmin = await ElectionAdministratorInstance.addAdministrator(accounts[3], {from: accounts[0]});
-        let removeAdmin = await ElectionAdministratorInstance.setPendingRemoval(accounts[1], {from: accounts[0]});
-        try {
-            await ElectionAdministratorInstance.approveRemoval(accounts[1], {from: accounts[0]});
-        } catch(err) {
-            Error = err
-        }
-        assert.strictEqual(Error.reason, 'You cannot approve a removal that you have made.');
+        let removeAdmin2 = await ElectionAdministratorInstance.setPendingRemoval(accounts[1], {from: accounts[0]});
+        // try {
+        //     await 
+        // } catch(err) {
+        //     Error = err
+        // }
+        // assert.strictEqual(Error.reason, 'You cannot approve a removal that you have made.');
+        await truffleAssert.reverts(ElectionAdministratorInstance.approveRemoval(accounts[1], {from: accounts[0]}), "You cannot approve a removal that you have made.");
     })
 
     
