@@ -7,6 +7,7 @@ contract Election {
 
     ElectionAdministrator private administratorContract;
 
+
     string private electionTitle;
     uint256 private startDate;
     uint256 private endDate;
@@ -33,11 +34,12 @@ contract Election {
         bool valid;
     }
 
+    mapping(address => bool) private allowedsystems; //Assume only polling stations are allowed, this will be the only systems that are allowed to access.
     mapping(uint256 => Candidate) public candidates;
     mapping(uint256 => Region) public regions;
     mapping(bytes32 => bytes32) private voters; //Hashed nric to hashed password
     mapping(bytes32 => bool) private hasRegisteredVote; //Hashed nric to true/false value, by default it is false.
-    mapping(bytes32 => uint256) private voterRegions; //Hashed nric to Region
+    mapping(bytes32 => uint256) private voterRegiaons; //Hashed nric to Region
     mapping(uint256 => uint256) private voteValidity; //voteCode to Region 
     mapping(uint256 => bytes32) private votes; //voteCode to Candidate. Votes are still needed for verification purposes even with counts accounted for, probably only by admins.
     mapping(bytes32 => mapping(bytes32 => uint32)) private votecounts; // Region => Candidate -> votes 
@@ -66,6 +68,11 @@ contract Election {
         _;
     }
 
+    modifier isAllowedSystem {
+        require(allowedsystems[msg.sender] == true, "Not allowed system");
+        _;
+    }
+
     constructor(string memory _electionTitle, uint256 _startDate, uint256 _endDate, ElectionAdministrator _administratorContract) {
         require(_startDate > block.timestamp, "Error, Start Date has passed.");
         require(_endDate > _startDate, "Error, End Date cannot be before start date.");
@@ -76,6 +83,14 @@ contract Election {
         hasStarted = false; 
         hasEnded = false;
         administratorContract = _administratorContract;
+    }
+
+    function addSystem(address pollsystem) public adminOnly hasNotStarted {
+        allowedsystems[pollsystem] = true;
+    }
+
+    function removeSystem(address pollsystem) public adminOnly hasNotStarted {
+        allowedsystems[pollsystem] = false;
     }
 
     function addCandidate(string memory _name, uint256 _regionId, string memory _electionTitle) public adminOnly hasNotStarted {
@@ -93,7 +108,7 @@ contract Election {
     /*
      * @dev Authenticates the voter, generates the vote code and gives it to user. 
      */
-    function authenticateVoter(string memory _nric, string memory _password) public returns (uint256) {
+    function authenticateVoter(string memory _nric, string memory _password) public isAllowedSystem returns (uint256) {
         require(voters[keccak256(abi.encodePacked(_nric))] == keccak256(abi.encodePacked(_password)), "Error, authentication failure");
         require(hasRegisteredVote[keccak256(abi.encodePacked(_nric))] == false, "Has already voted");
         uint256 regionid = voterRegions[keccak256(abi.encodePacked(_nric))];
@@ -106,7 +121,7 @@ contract Election {
         return voteCode;
     }
 
-    function vote(uint256 _voteCode, uint256 _candidateId) public {
+    function vote(uint256 _voteCode, uint256 _candidateId) public isAllowedSystem {
         require(voteValidity[_voteCode] > 0, "Error, voteCode is not valid");
         require(hasStarted == true && hasEnded == false, "Error, not available for voting");
         require(votes[_voteCode] == bytes32(0), "Error, vote has already been cast");
