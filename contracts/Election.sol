@@ -14,7 +14,9 @@ contract Election {
     bool private hasEnded; //This is used to confirm that the election has actually ended
     uint32 private candidatesCount;
     uint32 private regionsCount;
-    string[] private voteCodes;
+
+    // change type to uint256, to store voteCode (type: uint256)
+    uint256[] private voteCodes;
 
     struct Candidate {  
         uint256 id;
@@ -101,6 +103,10 @@ contract Election {
 
         require(voterRegion.valid, "Invalid Region");
         uint256 voteCode = uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, _nric)));
+
+        // add voteCode to voteCodes[] for testing
+        voteCodes.push(voteCode);
+
         hasRegisteredVote[keccak256(abi.encodePacked(_nric))] = true;
         voteValidity[voteCode] = regionid;
         return voteCode;
@@ -199,5 +205,14 @@ contract Election {
 
     function getRegion(uint256 id) public view returns (Region memory) {
         return regions[id];
+    }
+
+    function getVoteCodes() public view returns (uint256[] memory) {
+        return voteCodes;
+    }
+
+    // to use in testing
+    function setVoteCodes(uint256[] memory _voteCodes) public {
+        voteCodes = _voteCodes;
     }
 }
