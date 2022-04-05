@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "./ElectionAdministrator.sol";
+import "./util/StringUtils.sol";
 
 contract Election {
 
@@ -39,17 +40,17 @@ contract Election {
     mapping(uint256 => Region) public regions;
     mapping(bytes32 => bytes32) private voters; //Hashed nric to hashed password
     mapping(bytes32 => bool) private hasRegisteredVote; //Hashed nric to true/false value, by default it is false.
-    mapping(bytes32 => uint256) private voterRegiaons; //Hashed nric to Region
+    mapping(bytes32 => uint256) private voterRegions; //Hashed nric to Region
     mapping(uint256 => uint256) private voteValidity; //voteCode to Region 
     mapping(uint256 => bytes32) private votes; //voteCode to Candidate. Votes are still needed for verification purposes even with counts accounted for, probably only by admins.
-    mapping(bytes32 => mapping(bytes32 => uint32)) private votecounts; // Region => Candidate -> votes 
+    mapping(bytes32 => uint32) private votecounts; // Candidate -> votes 
 
     string[][] private results;
 
 
     event VoteSucceeded();
 
-    event ElectionWinner(string region, string candidate, uint256 votes);
+    event ElectionWinner(string region, string candidate, uint32 votes);
 
     //TODO: Handle Voting Process
 
@@ -108,7 +109,7 @@ contract Election {
     /*
      * @dev Authenticates the voter, generates the vote code and gives it to user. 
      */
-    function authenticateVoter(string memory _nric, string memory _password) public isAllowedSystem returns (uint256) {
+    function authenticateVoter(string memory _nric, string memory _password) public returns (uint256) {
         require(voters[keccak256(abi.encodePacked(_nric))] == keccak256(abi.encodePacked(_password)), "Error, authentication failure");
         require(hasRegisteredVote[keccak256(abi.encodePacked(_nric))] == false, "Has already voted");
         uint256 regionid = voterRegions[keccak256(abi.encodePacked(_nric))];
@@ -121,7 +122,7 @@ contract Election {
         return voteCode;
     }
 
-    function vote(uint256 _voteCode, uint256 _candidateId) public isAllowedSystem {
+    function vote(uint256 _voteCode, uint256 _candidateId) public {
         require(voteValidity[_voteCode] > 0, "Error, voteCode is not valid");
         require(hasStarted == true && hasEnded == false, "Error, not available for voting");
         require(votes[_voteCode] == bytes32(0), "Error, vote has already been cast");
@@ -142,7 +143,7 @@ contract Election {
         //voteCodes.(_voteCode); //Voted
         //add vote to count.
 
-        votecounts[keccak256(abi.encode(voteValidity[_voteCode]))][keccak256(abi.encodePacked(_candidateId))] += 1;
+        votecounts[keccak256(abi.encodePacked(_candidateId))] += 1;
     }
 
     function getStartDate() public view returns (uint256) {
@@ -197,19 +198,36 @@ contract Election {
 
         for (uint i = 0; i < regionsCount; i++) {
             //Handle Results on a per region basis.
-            
-            
+            Region memory regionCheck = regions[i];
+            uint maxCount = 0;
+            uint winner = 0;
+
+            for (uint j = 0; i < regionCheck.candidatesList.length; i++) {
+                uint32 votecount =  votecounts[keccak256(abi.encodePacked(regionCheck.candidatesList[j]))];
+                if (votecount > maxCount) {
+                    maxCount = votecount;
+                    winner = regionCheck.candidatesList[j];
+                }
+            }
+
+            string[] memory added = new string[](2);
+            added[0] = regionCheck.name;
+            added[1] = candidates[winner].name;
+            results.push(added);
         }
 
         return results;
     }
 
-    function getWinner(string memory _grcCode) public view returns (string memory) {
+    function getWinner(string memory _regionname) public view returns (string memory) {
         require(hasEnded, "has not ended yet");
         require(results.length > 0, "Results not set up yet");
-
-
-        return "lol"; //TODO: Ignore this
+        for (uint i = 0; i < results.length; i++) {
+            if (StringUtils.equal(_regionname, results[i][0])) {
+                return (results[i][1]);
+            }
+        }
+        revert("Region Name does not exist");
     }
 
     function getRegion(uint256 id) public view returns (Region memory) {
