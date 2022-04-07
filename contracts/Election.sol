@@ -17,6 +17,7 @@ contract Election {
     uint16 private regionsCount;
     string[] private voteCodes;
     string[][] private results;
+    bool private exists;
 
     struct Candidate {  
         uint16 id;
@@ -79,6 +80,7 @@ contract Election {
         hasStarted = false; 
         hasEnded = false;
         administratorContract = _administratorContract;
+        exists = true;
     }
 
     function addSystem(address pollsystem) public adminOnly hasNotStarted {
@@ -231,5 +233,9 @@ contract Election {
 
     function getCandidate(uint16 id) public view returns (Candidate memory) {
         return candidates[id];
+    }
+
+    function checkExists() public view returns (bool) {
+        return exists;
     }
 }
