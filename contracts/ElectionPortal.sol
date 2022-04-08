@@ -8,7 +8,8 @@ import "./VotingRegions.sol";
 contract ElectionPortal {
     ElectionAdministrator private administratorContract;
 
-    Election[] private elections;
+    mapping (uint16 => Election) private elections;
+    uint16 private latestElection;
 
     modifier adminOnly {
         require(administratorContract.isAdministrator(msg.sender), "Not Administrator");
@@ -17,15 +18,22 @@ contract ElectionPortal {
 
     constructor(ElectionAdministrator _administratorContract) {
         administratorContract = _administratorContract;
+        latestElection = 0;
     }
 
 
-    function addNewElection(Election election) public adminOnly {
-        elections.push(election);
+    function addNewElection(Election election, uint16 year) public adminOnly { //Assumption: new elections are only added once it is confirmed
+        elections[year] = election;
+        latestElection = year;
     }
 
     function getLatestElection() public view returns (Election) {
-        require(elections[elections.length -1].checkEnded() == false);
-        return elections[elections.length - 1];
+        require(elections[latestElection].checkExists(), "Election does not exist");
+        return elections[latestElection];
+    }
+
+    function getElection(uint16 year) public view returns (Election) {
+        require(elections[year].checkExists(), "Election does not exist");
+        return elections[year];
     }
 }
