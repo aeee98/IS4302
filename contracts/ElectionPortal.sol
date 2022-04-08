@@ -3,13 +3,15 @@ pragma solidity ^0.8.0;
 
 import "./Election.sol";
 import "./ElectionAdministrator.sol";
+import "./VotingRegions.sol";
 
 contract ElectionPortal {
     ElectionAdministrator private administratorContract;
 
-    Election[] private elections;
+    mapping (uint16 => Election) private elections;
+    uint16 private latestElection;
 
-    event ElectionAdded();
+    event ElectionAdded(); // for unit testing
 
     modifier adminOnly {
         require(administratorContract.isAdministrator(msg.sender), "Not Administrator");
@@ -18,17 +20,25 @@ contract ElectionPortal {
 
     constructor(ElectionAdministrator _administratorContract) {
         administratorContract = _administratorContract;
+        latestElection = 0;
     }
 
 
-    function addNewElection(Election election) public adminOnly {
-        elections.push(election);
+    function addNewElection(Election election, uint16 year) public adminOnly { //Assumption: new elections are only added once it is confirmed
+        elections[year] = election;
+        latestElection = year;
         emit ElectionAdded();
     }
 
     function getLatestElection() public view returns (Election) {
-        require(elections.length > 0, "Please add an election first!");
-        require(elections[elections.length -1].checkEnded() == false, "Election has ended.");
-        return elections[elections.length - 1];
+        require(address(elections[latestElection]) != address(0), "Election does not exist");
+        require(elections[latestElection].checkExists(), "Election does not exist");
+        return elections[latestElection];
+    }
+
+    function getElection(uint16 year) public view returns (Election) {
+        require(address(elections[year]) != address(0), "Election does not exist");
+        require(elections[year].checkExists(), "Election does not exist");
+        return elections[year];
     }
 }

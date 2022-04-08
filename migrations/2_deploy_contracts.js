@@ -1,3 +1,4 @@
+// source: https://ethereum.stackexchange.com/questions/39372/you-must-deploy-and-link-the-following-libraries-before-you-can-deploy-a-new-ver
 const Election = artifacts.require("Election");
 const ElectionAdministrator = artifacts.require("ElectionAdministrator");
 const ElectionPortal = artifacts.require("ElectionPortal");
