@@ -143,6 +143,16 @@ contract Election {
         votecounts[keccak256(abi.encodePacked(_candidateId))] += 1;
     }
 
+    function getCandidatesByRegion(uint16 _regionId) public view returns (uint16[] memory) {
+        return regions[_regionId].candidatesList;
+    }
+
+    function getRegionByVoter(string memory _nric, string memory _password) public view returns (uint16) {
+        require(voters[keccak256(abi.encodePacked(_nric))] == keccak256(abi.encodePacked(_password)), "Error, authentication failure");
+        return voterRegions[keccak256(abi.encodePacked(_nric))];
+    }
+
+
     function getStartDate() public view returns (uint256) {
         return startDate;
     }
