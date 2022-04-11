@@ -8,6 +8,7 @@ var ElectionPortal = artifacts.require("../contracts/ElectionPortal.sol");
 var ElectionAdministrator = artifacts.require("../contracts/ElectionAdministrator.sol");
 var Election = artifacts.require("../contracts/Election.sol");
 
+/* ElectionPortal.js Tests */
 contract('ElectionPortal', function(accounts) {
     before(async () => {
         electionAdminInstance = await ElectionAdministrator.deployed();
@@ -43,6 +44,7 @@ contract('ElectionPortal', function(accounts) {
     // const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 });
 
+/* Election Administrator Tests */
 contract("ElectionAdministrator", function(accounts) {
     before(async () => {
         ElectionAdministratorInstance = await ElectionAdministrator.deployed();
@@ -135,10 +137,13 @@ contract("ElectionAdministrator", function(accounts) {
 
 });
 
+/* Election.js tests */
 contract('Election', function(accounts) {
 
     before(async () => {
-        Election = await Election.deployed();
+        electionAdminInstance = await ElectionAdministrator.deployed();
+        electionInstance = await Election.deployed();
+        electionPortalInstance = await ElectionPortal.deployed();
     });
     console.log("Testing Election Contract");
 
