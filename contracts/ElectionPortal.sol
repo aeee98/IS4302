@@ -10,7 +10,6 @@ contract ElectionPortal {
 
     mapping (uint16 => Election) private elections;
     uint16 private latestElection;
-
     event ElectionAdded(); // for unit testing
 
     modifier adminOnly {
@@ -32,13 +31,11 @@ contract ElectionPortal {
 
     function getLatestElection() public view returns (Election) {
         require(address(elections[latestElection]) != address(0), "Election does not exist");
-        require(elections[latestElection].checkExists(), "Election does not exist");
         return elections[latestElection];
     }
-
+    
     function getElection(uint16 year) public view returns (Election) {
         require(address(elections[year]) != address(0), "Election does not exist");
-        require(elections[year].checkExists(), "Election does not exist");
         return elections[year];
     }
 }
