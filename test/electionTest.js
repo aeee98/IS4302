@@ -8,7 +8,8 @@ unit testing assumptions:
 
 const _deploy_contracts = require("../migrations/2_deploy_contracts");
 const truffleAssert = require('truffle-assertions');
-const time = require('openzeppelin-test-helpers');
+const time = require('openzeppelin-test-helpers'); // pip install --save-dev @openzeppelin/test-helpers
+
 var assert = require('assert');
 const { start } = require("repl");
 
