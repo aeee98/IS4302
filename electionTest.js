@@ -3,10 +3,12 @@ unit testing assumptions:
     1. accounts[1] will be admin, used for cases that should pass
     2. accounts[2] is not admin
     3. any account other than accoutns[1] should be used for cases the should fail
+    4. tests are run before start date of all elections
 */
 
 const _deploy_contracts = require("../migrations/2_deploy_contracts");
 const truffleAssert = require('truffle-assertions');
+const time = require('openzeppelin-test-helpers');
 var assert = require('assert');
 const { start } = require("repl");
 
@@ -63,6 +65,12 @@ contract('Election', function(accounts) {
         let vote3 = await electionInstance.vote(electionInstance.getVoteCodes[0], 1, {from: accounts[1]})
         // test vote for invalid candidate
         let vote4 = await electionInstance.vote(electionInstance.getVoteCodes[0], 10, {from: accounts[2]})
+        // vote cannot be cast after election ended
+        let vote5 = async() => {
+            time.increaseTo(electionInstance.getEndDate())
+            electionInstance.endElection({from: accounts[1]})
+            electionInstance.vote(electionInstance.getVoteCodes[0], 10, {from: accounts[2]})
+        }
 
         assert.notStrictEqual(
             vote1,
@@ -86,6 +94,12 @@ contract('Election', function(accounts) {
             vote4,
             undefined,
             'Invalid candidateId'
+        )
+
+        await truffleAssert.reverts(
+            vote5,
+            undefined,
+            'Election has already ended, vote cannot be cast'
         )
 
     });
@@ -139,20 +153,31 @@ contract('Election', function(accounts) {
     })
 
     it('Start election', async() => {
-
-        let startElection1 = await electionInstance.startElection({from: accounts[1]})
-        // election already started
-        let startElection2 = await electionInstance.startElection({from: accounts[1]})
+        
         // start date not yet reached
+        let startElection1 = await electionInstance.startElection({from: accounts[1]})
+        // election started
+        let startElection2 = async() => {
+            time.increaseTo(electionInstance.getStartDate({from: accounts[1]})) // set any timestamp in here
+            electionInstance.startElection({from: accounts[1]})
+        }
+        // election already started
+        let startElection3 = await electionInstance.startElection({from: accounts[1]})
 
-        assert.notStrictEqual(
+        await truffleAssert.reverts(
             startElection1,
+            undefined,
+            'Start date not yet reached'
+        )
+        
+        assert.notStrictEqual(
+            startElection2,
             undefined,
             "Failed to start election"
         )
 
         await truffleAssert.reverts(
-            startElection2,
+            startElection1,
             undefined,
             'Election already started'
         )
@@ -161,21 +186,117 @@ contract('Election', function(accounts) {
 
     it('End election', async() => {
 
+        // end date not yet reached
         let endElection1 = await electionInstance.endElection({from: accounts[1]})
+        // election ended
+        let endElection2 = async() => {
+            time.increasTo(electionInstance.getEndDate({from: accounts[1]}))
+            electionInstance.endElection({from: accounts[1]})
+        } 
         // election already ended
-        let endElection2 = await electionInstance.endElection({from: accounts[1]})
-        // end date not yet passed
+        let endElection3 = await electionInstance.endElection({from: accounts[1]})
 
-        assert.notStrictEqual(
+        await truffleAssert.reverts(
             endElection1,
+            undefined,
+            'End date not yet reached'
+        )
+        
+        assert.notStrictEqual(
+            endElection2,
             undefined,
             "Failed to end election"
         )
 
         await truffleAssert.reverts(
-            endElection2,
+            endElection3,
             undefined,
-            'Election already staendedrted'
+            'Election already ended'
+        )
+
+    })
+
+    it('Settle results', async() => {
+
+        // election not yet ended
+        let settleResults1 = await electionInstance.settleResults({from: accounts[1]})
+        // settle results
+        let settleResults2 = async() => {
+            time.increasTo(electionInstance.getEndDate({from: accounts[1]}))
+            electionInstance.endElection({from: accounts[1]})
+            electionInstance.settleResults({from: accounts[1]})
+        }
+        // results already settled
+        let settleResults3 = await electionInstance.settleResults({from: accounts[1]})
+
+
+        await truffleAssert.reverts(
+            settleResults1,
+            undefined,
+            'Election not yet ended'
+        )
+
+        assert.notStrictEqual(
+            settleResults2,
+            undefined,
+            "Failed to settle results"
+        )
+
+        await truffleAssert.reverts(
+            settleResults3,
+            undefined,
+            'Results already settled'
+        )
+
+    })
+
+    it('Get winner', async() => {
+
+        // election not yet ened
+        let getWinner1 = await electionInstance.getWinner({from: accounts[1]})
+        // results not yet settled, valid region
+        let getWinner2 = async() => {
+            time.increasTo(electionInstance.getEndDate({from: accounts[1]}))
+            electionInstance.endElection({from: accounts[1]})
+            electionInstance.getWinner('Bukit Timah', {from: accounts[1]}) // placeholder region name
+        }
+        // results settled, invalid region
+        let getWinner3 = async() => {
+            time.increasTo(electionInstance.getEndDate({from: accounts[1]}))
+            electionInstance.endElection({from: accounts[1]})
+            electionInstance.settleResults({from: accounts[1]})
+            electionInstance.getWinner('Woodlands', {from: accounts[1]}) // placeholder region name
+        }
+        // get winner
+        let getWinner4 = async() => {
+            time.increasTo(electionInstance.getEndDate({from: accounts[1]}))
+            electionInstance.endElection({from: accounts[1]})
+            electionInstance.settleResults({from: accounts[1]})
+            electionInstance.getWinner('Bukit Timah', {from: accounts[1]}) // placeholder region name
+        }
+        
+        await truffleAssert.reverts(
+            getWinner1,
+            undefined,
+            'Election not yet ended'
+        )
+        
+        await truffleAssert.reverts(
+            getWinner2,
+            undefined,
+            'Results not yet settled'
+        )
+        
+        await truffleAssert.reverts(
+            getWinner3,
+            undefined,
+            'Invalid region name'
+        )
+
+        assert.notStrictEqual(
+            getWinner4,
+            undefined,
+            "Failed to get winner"
         )
 
     })

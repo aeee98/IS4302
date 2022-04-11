@@ -114,6 +114,10 @@ contract Election {
 
         require(voterRegion.valid, "Invalid Region");
         uint256 voteCode = uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, _nric)));
+
+        // add voteCode to voteCodes[] for testing
+        // voteCodes.push(voteCode);
+
         hasRegisteredVote[keccak256(abi.encodePacked(_nric))] = true;
         voteValidity[voteCode] = regionid;
         return voteCode;
@@ -199,7 +203,7 @@ contract Election {
             uint maxCount = 0;
             uint winner = 0;
 
-            for (uint16 j = 0; i < regionCheck.candidatesList.length; i++) {
+            for (uint16 j = 0; j < regionCheck.candidatesList.length; j++) {
                 uint32 votecount =  votecounts[keccak256(abi.encodePacked(regionCheck.candidatesList[j]))];
                 if (votecount > maxCount) {
                     maxCount = votecount;
@@ -238,4 +242,15 @@ contract Election {
     function checkExists() public view returns (bool) {
         return exists;
     }
+
+/*
+    function getVoteCodes() public view returns (uint256[] memory) {
+        return voteCodes;
+    }
+
+    // to use in testing
+    function setVoteCodes(uint256[] memory _voteCodes) public {
+        voteCodes = _voteCodes;
+    }
+*/
 }
