@@ -2,7 +2,7 @@ const _deploy_contracts = require("../migrations/2_deploy_contracts.js");
 const truffleAssert = require('truffle-assertions');
 var assert = require('assert');
 const { syncBuiltinESMExports } = require("module");
-
+const time = require('@openzeppelin/test-helpers'); // pip install --save-dev @openzeppelin/test-helpers
 
 var ElectionPortal = artifacts.require("../contracts/ElectionPortal.sol");
 var ElectionAdministrator = artifacts.require("../contracts/ElectionAdministrator.sol");
@@ -148,7 +148,7 @@ contract('Election', function(accounts) {
     console.log("Testing Election Contract");
 
     it('Add Candidate', async () => {
-        let addCandidate1 = await electionInstance.addCandidate("John", 1, "vote", {from: accounts[1]});
+        let addCandidate1 = await electionInstance.addCandidate("John", 1, "vote", {from: accounts[0]});
 
         assert.notStrictEqual(
             addCandidate1,
@@ -159,7 +159,7 @@ contract('Election', function(accounts) {
 
     it('Add Region', async () => {
         
-        let addRegion1 = await electionInstance.addRegion("Bukit Timah", "vote", {from: accounts[1]});
+        let addRegion1 = await electionInstance.addRegion("Bukit Timah", "vote", {from: accounts[0]});
 
         assert.notStrictEqual(
             addCandidate1,
@@ -171,7 +171,7 @@ contract('Election', function(accounts) {
     // WIP
     it('Authenticate Voter', async () => {
 
-        let authenticateVoter1 = await electionInstance.authenticateVoter("S12345678A", "password", {from: accounts[1]});
+        let authenticateVoter1 = await electionInstance.authenticateVoter("S12345678A", "password", {from: accounts[0]});
 
     });
 
@@ -230,11 +230,11 @@ contract('Election', function(accounts) {
     // adminOnly modifier is tested here and will not be tested in subsequent unit tests
     it('Change start date', async() => {
 
-        let changeStartDate1 = await electionInstance.changeStartDate(100, {from: accounts[1]});
+        let changeStartDate1 = await electionInstance.changeStartDate(100, {from: accounts[0]});
         // accounts[2] is not admin
         let changeStartDate2 = await electionInstance.changeStartDate(100, {from: accounts[2]});
         // start date passed
-        let changeStartDate3 = await electionInstance.changeStartDate(0, {from: accounts[1]});
+        let changeStartDate3 = await electionInstance.changeStartDate(0, {from: accounts[0]});
 
         assert.notStrictEqual(
             changeStartDate1,
@@ -258,9 +258,9 @@ contract('Election', function(accounts) {
 
     it('Change end date', async() => {
 
-        let changeEndDate1 = await electionInstance.changeEndDate(200, {from: accounts[1]});
+        let changeEndDate1 = await electionInstance.changeEndDate(200, {from: accounts[0]});
         // end date before start date
-        let changeEndDate2 = await electionInstance.changeEndDate(20, {from: accounts[1]});
+        let changeEndDate2 = await electionInstance.changeEndDate(20, {from: accounts[0]});
 
         assert.notStrictEqual(
             changeEndDate1,
@@ -278,14 +278,14 @@ contract('Election', function(accounts) {
     it('Start election', async() => {
         
         // start date not yet reached
-        let startElection1 = await electionInstance.startElection({from: accounts[1]});
+        let startElection1 = await electionInstance.startElection({from: accounts[0]});
         // election started
         let startElection2 = async() => {
-            time.increaseTo(electionInstance.getStartDate({from: accounts[1]})); // set any timestamp in here
-            electionInstance.startElection({from: accounts[1]});
+            time.increaseTo(electionInstance.getStartDate({from: accounts[0]})); // set any timestamp in here
+            electionInstance.startElection({from: accounts[0]});
         }
         // election already started
-        let startElection3 = await electionInstance.startElection({from: accounts[1]});
+        let startElection3 = await electionInstance.startElection({from: accounts[0]});
 
         await truffleAssert.reverts(
             startElection1,
@@ -310,14 +310,14 @@ contract('Election', function(accounts) {
     it('End election', async() => {
 
         // end date not yet reached
-        let endElection1 = await electionInstance.endElection({from: accounts[1]})
+        let endElection1 = await electionInstance.endElection({from: accounts[0]})
         // election ended
         let endElection2 = async() => {
-            time.increasTo(electionInstance.getEndDate({from: accounts[1]}));
-            electionInstance.endElection({from: accounts[1]});
+            time.increaseTo(electionInstance.getEndDate({from: accounts[0]}));
+            electionInstance.endElection({from: accounts[0]});
         } 
         // election already ended
-        let endElection3 = await electionInstance.endElection({from: accounts[1]});
+        let endElection3 = await electionInstance.endElection({from: accounts[0]});
 
         await truffleAssert.reverts(
             endElection1,
@@ -341,15 +341,15 @@ contract('Election', function(accounts) {
     it('Settle results', async() => {
 
         // election not yet ended
-        let settleResults1 = await electionInstance.settleResults({from: accounts[1]});
+        let settleResults1 = await electionInstance.settleResults({from: accounts[0]});
         // settle results
         let settleResults2 = async() => {
-            time.increasTo(electionInstance.getEndDate({from: accounts[1]}));
-            electionInstance.endElection({from: accounts[1]});
-            electionInstance.settleResults({from: accounts[1]});
+            time.increasTo(electionInstance.getEndDate({from: accounts[0]}));
+            electionInstance.endElection({from: accounts[0]});
+            electionInstance.settleResults({from: accounts[0]});
         }
         // results already settled
-        let settleResults3 = await electionInstance.settleResults({from: accounts[1]});
+        let settleResults3 = await electionInstance.settleResults({from: accounts[0]});
 
 
         await truffleAssert.reverts(
@@ -375,26 +375,26 @@ contract('Election', function(accounts) {
     it('Get winner', async() => {
 
         // election not yet ened
-        let getWinner1 = await electionInstance.getWinner({from: accounts[1]});
+        let getWinner1 = await electionInstance.getWinner({from: accounts[0]});
         // results not yet settled, valid region
         let getWinner2 = async() => {
-            time.increasTo(electionInstance.getEndDate({from: accounts[1]}));
-            electionInstance.endElection({from: accounts[1]});
-            electionInstance.getWinner('Bukit Timah', {from: accounts[1]}); // placeholder region name
+            time.increasTo(electionInstance.getEndDate({from: accounts[0]}));
+            electionInstance.endElection({from: accounts[0]});
+            electionInstance.getWinner('Bukit Timah', {from: accounts[0]}); // placeholder region name
         }
         // results settled, invalid region
         let getWinner3 = async() => {
-            time.increasTo(electionInstance.getEndDate({from: accounts[1]}));
-            electionInstance.endElection({from: accounts[1]});
-            electionInstance.settleResults({from: accounts[1]});
-            electionInstance.getWinner('Woodlands', {from: accounts[1]});// placeholder region name
+            time.increasTo(electionInstance.getEndDate({from: accounts[0]}));
+            electionInstance.endElection({from: accounts[0]});
+            electionInstance.settleResults({from: accounts[0]});
+            electionInstance.getWinner('Woodlands', {from: accounts[0]});// placeholder region name
         }
         // get winner
         let getWinner4 = async() => {
-            time.increasTo(electionInstance.getEndDate({from: accounts[1]}));
-            electionInstance.endElection({from: accounts[1]});
-            electionInstance.settleResults({from: accounts[1]});
-            electionInstance.getWinner('Bukit Timah', {from: accounts[1]});// placeholder region name
+            time.increasTo(electionInstance.getEndDate({from: accounts[0]}));
+            electionInstance.endElection({from: accounts[0]});
+            electionInstance.settleResults({from: accounts[0]});
+            electionInstance.getWinner('Bukit Timah', {from: accounts[0]});// placeholder region name
         }
         
         await truffleAssert.reverts(
