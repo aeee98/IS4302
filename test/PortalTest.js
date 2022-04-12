@@ -140,6 +140,9 @@ contract("ElectionAdministrator", function(accounts) {
 /* Election.js tests */
 contract('Election', function(accounts) {
 
+    var addCandidate1;
+    var addRegion1;
+
     before(async () => {
         electionAdminInstance = await ElectionAdministrator.deployed();
         electionInstance = await Election.deployed();
@@ -148,7 +151,7 @@ contract('Election', function(accounts) {
     console.log("Testing Election Contract");
 
     it('Add Candidate', async () => {
-        let addCandidate1 = await electionInstance.addCandidate("John", 1, "vote", {from: accounts[0]});
+        addCandidate1 = await electionInstance.addCandidate("John", 1, "vote", {from: accounts[0]});
 
         assert.notStrictEqual(
             addCandidate1,
@@ -159,7 +162,7 @@ contract('Election', function(accounts) {
 
     it('Add Region', async () => {
         
-        let addRegion1 = await electionInstance.addRegion("Bukit Timah", "vote", {from: accounts[0]});
+        addRegion1 = await electionInstance.addRegion("Bukit Timah", "vote", {from: accounts[0]});
 
         assert.notStrictEqual(
             addCandidate1,
@@ -171,7 +174,7 @@ contract('Election', function(accounts) {
     // WIP
     it('Authenticate Voter', async () => {
 
-        let authenticateVoter1 = await electionInstance.authenticateVoter("S12345678A", "password", {from: accounts[0]});
+        var authenticateVoter1 = await electionInstance.authenticateVoter("S12345678A", "password", {from: accounts[0]});
 
     });
 

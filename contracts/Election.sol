@@ -43,10 +43,11 @@ contract Election {
     mapping(bytes32 => uint16) private voterRegions; //Hashed nric to regionId
     mapping(uint256 => uint16) private voteValidity; //voteCode to regionId
     mapping(uint256 => bytes32) private votes; //voteCode to hashed candidateId. Votes are still needed for verification purposes even with counts accounted for, probably only by admins.
-    mapping(bytes32 => uint32) private votecounts; // Candidate -> votes 
+    mapping(bytes32 => uint256) private votecounts; // Candidate -> votes 
 
+    event VotersAddedInRegion(uint16 regionId, uint256 count);
     event VoteSucceeded();
-    event ElectionWinner(string region, string candidate, uint32 votes);
+    event ElectionWinner(string region, string candidate, uint256 votes);
 
     //TODO: Handle Voting Process
 
@@ -101,6 +102,18 @@ contract Election {
         uint16[] memory candidatesList;
         regionsCount++;
         regions[regionsCount] = Region(regionsCount, _name, candidatesList, _electionTitle, true);
+    }
+
+
+    function addVoters(string[] memory _nricList, string[] memory _passwordList, uint16 regionId) public adminOnly hasNotStarted {
+        require (_nricList.length > 0, "Lists must contain something");
+        require (_nricList.length == _passwordList.length, "Both lists must be the same length");
+        for (uint i = 0; i < _nricList.length; ++i) {
+            voters[keccak256(abi.encodePacked(_nricList[i]))] = keccak256(abi.encodePacked(_passwordList[i]));
+            voterRegions[keccak256(abi.encodePacked(_nricList[i]))] = regionId;
+        }
+
+        emit VotersAddedInRegion(regionId, _nricList.length);
     }
 
     /*
@@ -214,7 +227,7 @@ contract Election {
             uint winner = 0;
 
             for (uint16 j = 0; j < regionCheck.candidatesList.length; j++) {
-                uint32 votecount =  votecounts[keccak256(abi.encodePacked(regionCheck.candidatesList[j]))];
+                uint256 votecount =  votecounts[keccak256(abi.encodePacked(regionCheck.candidatesList[j]))];
                 if (votecount > maxCount) {
                     maxCount = votecount;
                     winner = regionCheck.candidatesList[j];
