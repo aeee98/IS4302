@@ -149,20 +149,11 @@ contract('Election', function(accounts) {
     });
     console.log("Testing Election Contract");
 
-    it('Add Candidate', async () => {
-        let addCandidate1 = await electionInstance.addCandidate("John", 1, "vote", {from: accounts[0]});
-
-        assert.notStrictEqual(
-            addCandidate1,
-            undefined,
-            "Failed to add candidate"
-        );
-
-    })
+    let addRegion1, addRegion2;
 
     it('Add Region', async () => {
         
-        let addRegion1 = await electionInstance.addRegion("Bukit Timah", "vote", {from: accounts[0]});
+        addRegion1 = await electionInstance.addRegion("Bukit Timah", "vote", {from: accounts[0]});
 
         assert.notStrictEqual(
             addRegion1,
@@ -170,7 +161,63 @@ contract('Election', function(accounts) {
             "Failed to add region"
         );
 
-    })
+        addRegion2 = await electionInstance.addRegion("Woodlands", "vote", {from: accounts[0]});
+
+        assert.notStrictEqual(
+            addRegion2,
+            undefined,
+            "Failed to add region"
+        );
+    });
+
+    it('Add Candidate', async () => {
+        let addCandidate1 = await electionInstance.addCandidate("People's Action Party", 1, "PAP", {from: accounts[0]});
+
+        assert.notStrictEqual(
+            addCandidate1,
+            undefined,
+            "Failed to add candidate"
+        );
+
+        let addCandidate2 = await electionInstance.addCandidate("Worker's Party", 1, "WP", {from: accounts[0]});
+
+        assert.notStrictEqual(
+            addCandidate1,
+            undefined,
+            "Failed to add candidate"
+        );
+
+        let regionCheck1 = await electionInstance.getRegion(1, {from:accounts[5]});
+
+        assert.equal(regionCheck1.candidatesList.length, 2, "Error, wrong candidate count");
+
+        let addCandidate3 = await electionInstance.addCandidate("Tan Ah Beng", 2, "TAB", {from: accounts[0]});
+
+        assert.notStrictEqual(
+            addCandidate3,
+            undefined,
+            "Failed to add candidate"
+        );
+
+        let addCandidate4 = await electionInstance.addCandidate("Lee An Teh", 2, "LAT", {from: accounts[0]});
+
+        assert.notStrictEqual(
+            addCandidate4,
+            undefined,
+            "Failed to add candidate"
+        );
+
+        let addCandidate5 = await electionInstance.addCandidate("See Ta", 2, "LAT", {from: accounts[0]});
+
+        assert.notStrictEqual(
+            addCandidate5,
+            undefined,
+            "Failed to add candidate"
+        );
+
+        let regionCheck2 = await electionInstance.getRegion(2, {from:accounts[5]});
+        assert.equal(regionCheck2.candidatesList.length, 3, "Error, wrong candidate count");
+    });
 
     it('Add voters', async() => {
         let _nriclist1 = ['S1234567A', 'S1234567B', 'S1234567C', 'S1234567D', 'S1234567E'];
@@ -275,21 +322,16 @@ contract('Election', function(accounts) {
     })
 
     it('Vote', async () => {
-        
-        let test = await electionInstance.getAllowedRegion.call('S1234567A', {from: accounts[0]});
-        console.log("test " + String(test));
-        
-        let voteCode1 = await electionInstance.authenticateVoter.call('S1234567A', 'passwordA', {from: accounts[0]});
+        let vote1 = await electionInstance.vote('S1234567A', 'passwordA', 1, {from: accounts[0]});
+        truffleAssert.eventEmitted(vote1, 'VoteSucceeded');
 
-        console.log(voteCode1);
-
-        let regionCheck = await electionInstance.getVoteCodeAllowedRegion.call(String(voteCode1), {from: accounts[0]});
+        // let regionCheck = await electionInstance.getAllowedVoterRegion.call(voteCode1, {from: accounts[0]});
         
-        console.log(regionCheck);
+        // console.log(String(regionCheck));
 
         // test normal vote
-        let vote1 = await electionInstance.vote(voteCode1, 1, {from: accounts[0]});
-        truffleAssert.eventEmitted(vote1, 'VoteSucceeded');
+        //let vote1 = await electionInstance.vote(voteCode1, 1, {from: accounts[0]});
+        
 
         // await truffleAssert.reverts(
         //     electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordB', {from: accounts[0]}), 1, {from: accounts[0]}),
