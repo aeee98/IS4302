@@ -140,7 +140,7 @@ contract("ElectionAdministrator", function(accounts) {
 /* Election.js tests */
 contract('Election', function(accounts) {
 
-    let addCandidate1, addCandidate2, addCandidate3, addCandidate4;
+    let addCandidate1, addCandidate2, addCandidate3, addCandidate4, addCandidate5;
     let addRegion1, addRegion2;
 
     before(async () => {
@@ -177,7 +177,7 @@ contract('Election', function(accounts) {
     });
 
     it('Add Candidate', async () => {
-        addCandidate1 = await electionInstance.addCandidate("John Lee", 1, "vote", {from: accounts[0]});
+        addCandidate1 = await electionInstance.addCandidate("People's Action Party", 1, "PAP", {from: accounts[0]});
 
         assert.notStrictEqual(
             addCandidate1,
@@ -185,7 +185,7 @@ contract('Election', function(accounts) {
             "Failed to add candidate"
         );
 
-        addCandidate2 = await electionInstance.addCandidate("Tan Ah Beng", 1, "vote", {from: accounts[0]});
+        addCandidate2 = await electionInstance.addCandidate("Worker's Party", 1, "WP", {from: accounts[0]});
         
         assert.notStrictEqual(
             addCandidate2,
@@ -194,9 +194,9 @@ contract('Election', function(accounts) {
         );
 
         let regionCheck1 = await electionInstance.getRegion(1);
-        assert.equal(regionCheck1.candidates.length, 2, "Error, not the correct number of people");
+        assert.equal(regionCheck1.candidatesList.length, 2, "Error, not the correct number of people");
 
-        addCandidate3 = await electionInstance.addCandidate("Kenny Lee", 2, "vote", {from: accounts[0]});
+        addCandidate3 = await electionInstance.addCandidate("Kenny Lee", 2, "KL", {from: accounts[0]});
 
         assert.notStrictEqual(
             addCandidate3,
@@ -204,7 +204,7 @@ contract('Election', function(accounts) {
             "Failed to add candidate"
         );
 
-        addCandidate4 = await electionInstance.addCandidate("Tan Soon Heng", 2, "vote", {from: accounts[0]});
+        addCandidate4 = await electionInstance.addCandidate("Tan Soon Heng", 2, "TSH", {from: accounts[0]});
         
         assert.notStrictEqual(
             addCandidate4,
@@ -212,7 +212,16 @@ contract('Election', function(accounts) {
             "Failed to add candidate"
         );
 
-        assert.equal(regionCheck2.candidates.length, 2, "Error, not the correct number of people");
+        addCandidate5 = await electionInstance.addCandidate("Keng Ah Seng", 2, "KAS", {from: accounts[0]});
+        
+        assert.notStrictEqual(
+            addCandidate5,
+            undefined,
+            "Failed to add candidate"
+        );
+
+        let regionCheck2 = await electionInstance.getRegion(2);
+        assert.equal(regionCheck2.candidatesList.length, 3, "Error, not the correct number of people");
     });
 
     
@@ -285,7 +294,7 @@ contract('Election', function(accounts) {
 
         let changeStartDate1 = await electionInstance.changeStartDate(100, {from: accounts[0]});
         // accounts[2] is not admin
-        let changeStartDate2 = await electionInstance.changeStartDate(100, {from: accounts[2]});
+        let changeStartDate2 = await electionInstance.changeStartDate(100, {from: accounts[0]});
         // start date passed
         let changeStartDate3 = await electionInstance.changeStartDate(0, {from: accounts[0]});
 
