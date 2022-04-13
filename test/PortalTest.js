@@ -171,33 +171,30 @@ contract('Election', function(accounts) {
     })
 
     it('Add voters', async() => {
+        let _nriclist1 = ['S1234567A', 'S1234567B', 'S1234567C', 'S1234567D', 'S1234567E'];
+        let _nriclist2 = ['S1234567F', 'S1234567G', 'S1234567H', 'S1234567I', 'S1234567J'];
+        let _passwordlist1 = ['passwordA', 'passwordB', 'passwordC', 'passwordD', 'passwordE'];
+        let _passwordlist2 = ['passwordF', 'passwordG', 'passwordH', 'passwordI', 'passwordJ'];
 
-        let _nriclist1 = ['S1234567A', 'S1234567B', 'S1234567C', 'S1234567D', 'S1234567E']
-        let _nriclist2 = ['S1234567F', 'S1234567G', 'S1234567H', 'S1234567I', 'S1234567J']
-        let _passwordlist1 = ['passwordA', 'passwordB', 'passwordC', 'passwordD', 'passwordE']
-        let _passwordlist2 = ['passwordF', 'passwordG', 'passwordH', 'passwordI', 'passwordJ']
+        let addVoters1 = await electionInstance.addVoters(_nriclist1, _passwordlist1, 1, {from: accounts[0]});
+        let addVoters2 = await electionInstance.addVoters(_nriclist2, _passwordlist2, 2, {from: accounts[0]});
 
-        let addVoters1 = async() => {
-            electionInstance.addVoters(_nriclist1, _passwordlist1, 1, {from: accounts[0]})
-            electionInstance.addVoters(_nriclist2, _passwordlist2, 2, {from: accounts[0]})
-        }
-
-        assert.notStrictEqual(
-            addVoters1,
-            undefined,
-            "Failed to add voters"
-        )
+        truffleAssert.eventEmitted(addVoters1, 'VotersAddedInRegion', (ev) => {
+            return ev.regionId == 1 && ev.count == 5;
+        });
+        truffleAssert.eventEmitted(addVoters2, 'VotersAddedInRegion', (ev) => {
+            return ev.regionId == 2 && ev.count == 5;
+        });
 
         await truffleAssert.reverts(
-            electionInstance.addVoters([], _passwordlist1, 1, {from:accounts[0]}),
-            'No NRICs were added'
-        )
+            electionInstance.addVoters(['1'], _passwordlist1, 1, {from:accounts[0]}),
+            'Both lists must be the same length'
+        );
 
         await truffleAssert.reverts(
-            electionInstance.addVoters(_nriclist1, [], 1, {from: accounts[0]}),
-            'Password list not same length as NRIC list'
-        )
-
+             electionInstance.addVoters(_nriclist1, ['1'], 1, {from: accounts[0]}),
+            'Both lists must be the same length'
+        );
     })
 
     // adminOnly modifier is tested here and will not be tested in subsequent unit tests
