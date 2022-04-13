@@ -72,6 +72,11 @@ contract Election {
         _;
     }
 
+    modifier alreadyEnded {
+        require(hasEnded == true);
+        _;
+    }
+
     modifier isAllowedSystem {
         require(allowedsystems[msg.sender] == true, "Not allowed system");
         _;
@@ -272,5 +277,9 @@ contract Election {
 
     function checkExists() public view returns (bool) {
         return exists;
+    }
+
+    function getVoteCount(uint16 _candidateId) public view alreadyEnded returns (uint256) {
+        return votecounts[keccak256(abi.encodePacked(_candidateId))];
     }
 }
