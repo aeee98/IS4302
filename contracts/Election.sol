@@ -133,9 +133,10 @@ contract Election {
      * @dev Authenticates the voter, approves the voting based on the system and approves the vote if successful. 
      */
     function vote(string memory _nric, string memory _password, uint16 _candidateId) public {
+        require(hasStarted == true && hasEnded == false, "Error, not available for voting");
         require(voters[keccak256(abi.encodePacked(_nric))] == keccak256(abi.encodePacked(_password)), "Error, authentication failure");
         require(hasRegisteredVote[keccak256(abi.encodePacked(_nric))] == false, "Has already voted");
-        require(hasStarted == true && hasEnded == false, "Error, not available for voting");
+        
 
         uint16 regionid = voterRegions[keccak256(abi.encodePacked(_nric))];
         Region memory voterRegion = regions[regionid];

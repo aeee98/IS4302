@@ -249,7 +249,7 @@ contract('Election', function(accounts) {
     // adminOnly modifier is tested here and will not be tested in subsequent unit tests
     it('Change start date', async() => {
 
-        let changeStartDate1 = await electionInstance.changeStartDate(new BN(Date.now()).add(new BN(2000)), {from: accounts[0]});
+        let changeStartDate1 = await electionInstance.changeStartDate(new BN(Date.now()).add(new BN(180000)), {from: accounts[0]});
 
         assert.notStrictEqual(
             changeStartDate1,
@@ -281,17 +281,15 @@ contract('Election', function(accounts) {
     });
 
     it('Start election', async() => {
-        
-        // election started
-        let startElection2 = async() => {
-            time.increaseTo(electionInstance.getStartDate({from: accounts[0]})); // set any timestamp in here
-            electionInstance.startElection({from: accounts[0]});
-        }
 
         await truffleAssert.reverts(
             electionInstance.startElection({from: accounts[0]}),
             'Can only start after start date'
-        )
+        );
+        
+        time.increaseTo(await electionInstance.getStartDate({from: accounts[0]}));
+        // election started
+        let startElection2 = electionInstance.startElection({from: accounts[0]});
         
         assert.notStrictEqual(
             startElection2,
@@ -299,22 +297,22 @@ contract('Election', function(accounts) {
             "Failed to start election"
         );
 
-        await truffleAssert.reverts(
+        truffleAssert.reverts(
             electionInstance.startElection({from: accounts[0]}),
             'Error, cannot start election that has already started'
-        )
+        );
 
-        await truffleAssert.reverts(
+        truffleAssert.reverts(
             electionInstance.changeStartDate(100, {from: accounts[0]}),
             'Error, election has started'
-        )
+        );
 
-        await truffleAssert.reverts(
-            electionInstance.changeEndDate(electionInstance.getEndDate({from: accounts[0]}) + 100, {from: accounts[0]}),
-            'Error, End Date cannot be before Start Date'
-        )
+        truffleAssert.reverts(
+            electionInstance.changeEndDate(100, {from: accounts[0]}),
+            'Error, election has started'
+        );
 
-    })
+    });
 
     it('Vote', async () => {
 
@@ -368,18 +366,16 @@ contract('Election', function(accounts) {
     });
 
     it('End election', async() => {
-
-        // election ended
-        let endElection2 = async() => {
-            time.increaseTo(electionInstance.getEndDate({from: accounts[0]}))
-            electionInstance.endElection({from: accounts[0]})
-        } 
-
         await truffleAssert.reverts(
             electionInstance.endElection({from: accounts[0]}),
             'Error, ensure to only end after end time'
-        )
-        ;
+        );
+
+        time.increaseTo(await electionInstance.getEndDate({from: accounts[0]}))
+        // election ended
+        let endElection2 = electionInstance.endElection({from: accounts[0]})
+
+       
         assert.notStrictEqual(
             endElection2,
             undefined,
@@ -392,29 +388,19 @@ contract('Election', function(accounts) {
         );
 
         await truffleAssert.reverts(
-            electionInstance.vote(electionInstance.authenticateVoter('S1234567B', 'passwordB', {from: accounts[0]}), 1, {from: accounts[0]}),
+            electionInstance.vote('S1234567B', 'passwordB', 1, {from: accounts[0]}),
             'Error, not available for voting'
         );
-
     });
 
     it('Settle results', async() => {
 
-        // election not yet ended
-        let settleResults1 = await electionInstance.settleResults({from: accounts[0]})
-        // settle results
-        let settleResults2 = async() => {
-            time.increaseTo(electionInstance.getEndDate({from: accounts[0]}))
-            electionInstance.endElection({from: accounts[0]})
-            electionInstance.settleResults({from: accounts[0]})
-        }
-        // results already settled
-        let settleResults3 = await electionInstance.settleResults({from: accounts[0]})
-
-        await truffleAssert.reverts(
+        truffleAssert.reverts(
             electionInstance.getWinner('Bukit Timah', {from: accounts[0]}), // placeholder region name
             'Results not set up yet'
-        )
+        );
+
+        let settleResults2 = await electionInstance.settleResults({from: accounts[0]});
 
         assert.notStrictEqual(
             settleResults2,
@@ -422,7 +408,7 @@ contract('Election', function(accounts) {
             "Failed to settle results"
         );
 
-        await truffleAssert.reverts(
+        truffleAssert.reverts(
             electionInstance.settleResults({from: accounts[0]}),
             'Results already settled'
         );
@@ -438,26 +424,26 @@ contract('Election', function(accounts) {
             time.increaseTo(electionInstance.getEndDate({from: accounts[0]}))
             electionInstance.endElection({from: accounts[0]})
             electionInstance.getWinner('Bukit Timah', {from: accounts[0]}) // placeholder region name
-        }
+        };
         // results settled, invalid region
         let getWinner3 = async() => {
             time.increaseTo(electionInstance.getEndDate({from: accounts[0]}))
             electionInstance.endElection({from: accounts[0]})
             electionInstance.settleResults({from: accounts[0]})
             electionInstance.getWinner('Woodlands', {from: accounts[0]}) // placeholder region name
-        }
+        };
         // get winner
         let getWinner4 = async() => {
             time.increaseTo(electionInstance.getEndDate({from: accounts[0]}))
             electionInstance.endElection({from: accounts[0]})
             electionInstance.settleResults({from: accounts[0]})
             electionInstance.getWinner('Bukit Timah', {from: accounts[0]}) // placeholder region name
-        }
+        };
         
         await truffleAssert.reverts(
             electionInstance.getWinner('Woodlands', {from: accounts[0]}), // placeholder region name
             'Region Name does not exist'
-        )
+        );
 
         assert.notStrictEqual(
             getWinner4,
