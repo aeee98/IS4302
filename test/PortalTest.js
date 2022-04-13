@@ -251,65 +251,6 @@ contract('Election', function(accounts) {
         );
     });
 
-    // // WIP
-    // it('Authenticate Voter', async () => {
-
-    //     var authenticateVoter1 = await electionInstance.authenticateVoter("S12345678A", "password", {from: accounts[0]});
-
-    // });
-
-    it('Vote', async () => {
-        
-        // test normal vote
-        let vote1 = await electionInstance.vote(electionInstance.getVoteCodes[0], 1, {from: accounts[1]});
-        // test vote with invalid voteCode
-        let vote2 = async () => {
-            electionInstance.setVoteCodes(electionInstance.getVoteCodes().push(0));
-            electionInstance.vote(electionInstance.getVoteCodes[1], 1, {from: accounts[2]});
-        }
-        // test vote when already voted
-        let vote3 = await electionInstance.vote(electionInstance.getVoteCodes[0], 1, {from: accounts[1]});
-        // test vote for invalid candidate
-        let vote4 = await electionInstance.vote(electionInstance.getVoteCodes[0], 10, {from: accounts[2]});
-        // vote cannot be cast after election ended
-        let vote5 = async() => {
-            time.increaseTo(electionInstance.getEndDate())
-            electionInstance.endElection({from: accounts[1]})
-            electionInstance.vote(electionInstance.getVoteCodes[0], 10, {from: accounts[2]})
-        };
-
-        assert.notStrictEqual(
-            vote1,
-            undefined,
-            "Failed to cast vote"
-        );
-
-        await truffleAssert.reverts(
-            vote2,
-            undefined,
-            'Invalid voteCode'
-        );
-
-        await truffleAssert.reverts(
-            vote3,
-            undefined,
-            'Account has already voted'
-        );
-
-        await truffleAssert.reverts(
-            vote4,
-            undefined,
-            'Invalid candidateId'
-        );
-
-        await truffleAssert.reverts(
-            vote5,
-            undefined,
-            'Election has already ended, vote cannot be cast'
-        );
-
-    });
-
     // adminOnly modifier is tested here and will not be tested in subsequent unit tests
     it('Change start date', async() => {
 
@@ -386,6 +327,65 @@ contract('Election', function(accounts) {
             startElection1,
             undefined,
             'Election already started'
+        );
+
+    });
+
+        // // WIP
+    // it('Authenticate Voter', async () => {
+
+    //     var authenticateVoter1 = await electionInstance.authenticateVoter("S12345678A", "password", {from: accounts[0]});
+
+    // });
+
+    it('Vote', async () => {
+        
+        // test normal vote
+        let vote1 = await electionInstance.vote(electionInstance.getVoteCodes[0], 1, {from: accounts[1]});
+        // test vote with invalid voteCode
+        let vote2 = async () => {
+            electionInstance.setVoteCodes(electionInstance.getVoteCodes().push(0));
+            electionInstance.vote(electionInstance.getVoteCodes[1], 1, {from: accounts[2]});
+        }
+        // test vote when already voted
+        let vote3 = await electionInstance.vote(electionInstance.getVoteCodes[0], 1, {from: accounts[1]});
+        // test vote for invalid candidate
+        let vote4 = await electionInstance.vote(electionInstance.getVoteCodes[0], 10, {from: accounts[2]});
+        // vote cannot be cast after election ended
+        let vote5 = async() => {
+            time.increaseTo(electionInstance.getEndDate())
+            electionInstance.endElection({from: accounts[1]})
+            electionInstance.vote(electionInstance.getVoteCodes[0], 10, {from: accounts[2]})
+        };
+
+        assert.notStrictEqual(
+            vote1,
+            undefined,
+            "Failed to cast vote"
+        );
+
+        await truffleAssert.reverts(
+            vote2,
+            undefined,
+            'Invalid voteCode'
+        );
+
+        await truffleAssert.reverts(
+            vote3,
+            undefined,
+            'Account has already voted'
+        );
+
+        await truffleAssert.reverts(
+            vote4,
+            undefined,
+            'Invalid candidateId'
+        );
+
+        await truffleAssert.reverts(
+            vote5,
+            undefined,
+            'Election has already ended, vote cannot be cast'
         );
 
     });
