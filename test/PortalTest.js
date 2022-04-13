@@ -140,8 +140,8 @@ contract("ElectionAdministrator", function(accounts) {
 /* Election.js tests */
 contract('Election', function(accounts) {
 
-    var addCandidate1;
-    var addRegion1;
+    let addCandidate1, addCandidate2, addCandidate3, addCandidate4;
+    let addRegion1, addRegion2;
 
     before(async () => {
         electionAdminInstance = await ElectionAdministrator.deployed();
@@ -149,6 +149,32 @@ contract('Election', function(accounts) {
         electionPortalInstance = await ElectionPortal.deployed();
     });
     console.log("Testing Election Contract");
+
+    it('Add Region', async () => {
+        
+        addRegion1 = await electionInstance.addRegion("Bukit Timah", "vote", {from: accounts[0]});
+
+        assert.notStrictEqual(
+            addRegion1,
+            undefined,
+            "Failed to add region"
+        );
+
+        let regionCheck1 = await electionInstance.getRegion(1);
+
+        assert.strictEqual(regionCheck1.name, "Bukit Timah", "Name of region 1 is wrong.");
+
+        addRegion2 = await electionInstance.addRegion("Woodlands", "vote", {from: accounts[0]});
+
+        assert.notStrictEqual(
+            addRegion2,
+            undefined,
+            "Failed to add region"
+        );
+
+        let regionCheck2 = await electionInstance.getRegion(2);
+        assert.strictEqual(regionCheck2.name, "Woodlands", "Name of region 2 is wrong.");
+    });
 
     it('Add Candidate', async () => {
         addCandidate1 = await electionInstance.addCandidate("John", 1, "vote", {from: accounts[0]});
@@ -160,15 +186,7 @@ contract('Election', function(accounts) {
         );
     });
 
-    it('Add Region', async () => {
-        
-        addRegion1 = await electionInstance.addRegion("Bukit Timah", "vote", {from: accounts[0]});
-
-        assert.notStrictEqual(
-            addCandidate1,
-            undefined,
-            "Failed to add region"
-        );
+    it('Add Voters', async () => {
     });
 
     // WIP

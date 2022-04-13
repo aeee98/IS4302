@@ -90,10 +90,12 @@ contract Election {
         exists = true;
     }
 
+    //Unused Function at the moment. Possibly to create vote platforms that are allowed to do the voting.
     function addSystem(address pollsystem) public adminOnly hasNotStarted {
         allowedsystems[pollsystem] = true;
     }
 
+    //Unused Function at the moment. Possibly to remove vote platforms that are allowed to do the voting.
     function removeSystem(address pollsystem) public adminOnly hasNotStarted {
         allowedsystems[pollsystem] = false;
     }
