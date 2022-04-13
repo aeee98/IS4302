@@ -200,7 +200,7 @@ contract('Election', function(accounts) {
     // adminOnly modifier is tested here and will not be tested in subsequent unit tests
     it('Change start date', async() => {
 
-        let changeStartDate1 = await electionInstance.changeStartDate(100, {from: accounts[0]})
+        let changeStartDate1 = await electionInstance.changeStartDate(100, {from: accounts[0]});
 
         assert.notStrictEqual(
             changeStartDate1,
@@ -211,7 +211,7 @@ contract('Election', function(accounts) {
         await truffleAssert.reverts(
             electionInstance.changeStartDate(electionInstance.getStartDate({from: accounts[0]}) - 1, {from: accounts[0]}),
             'Error, Start Date has passed'
-        )
+        );
 
     });
 
@@ -240,8 +240,8 @@ contract('Election', function(accounts) {
         
         // election started
         let startElection2 = async() => {
-            time.increaseTo(electionInstance.getStartDate({from: accounts[0]})) // set any timestamp in here
-            electionInstance.startElection({from: accounts[0]})
+            time.increaseTo(electionInstance.getStartDate({from: accounts[0]})); // set any timestamp in here
+            electionInstance.startElection({from: accounts[0]});
         }
 
         await truffleAssert.reverts(
