@@ -78,7 +78,7 @@ contract('Election', function(accounts) {
     // WIP
     it('Authenticate Voter', async () => {
 
-        let authenticateVoter1 = await electionInstance.authenticateVoter("S12345678A", "password", {from: accounts[0]})
+        let authenticateVoter1 = await electionInstance.authenticateVoter("S1234567A", "passwordA", {from: accounts[0]})
 
     });
 
@@ -134,11 +134,6 @@ contract('Election', function(accounts) {
         )
 
         await truffleAssert.reverts(
-            electionInstance.changeStartDate(100, {from: accounts[0]}),
-            'Error, election has started'
-        )
-
-        await truffleAssert.reverts(
             electionInstance.changeStartDate(electionInstance.getStartDate({from: accounts[0]}) - 1, {from: accounts[0]}),
             'Error, Start Date has passed'
         )
@@ -156,10 +151,7 @@ contract('Election', function(accounts) {
         )
 
         await truffleAssert.reverts(
-            async() => {
-                electionInstance.startElection({from: accounts[0]})
-                electionInstance.changeEndDate(electionInstance.getEndDate({from: accounts[0]}) + 100, {from: accounts[0]})
-            },
+            electionInstance.changeEndDate(electionInstance.getEndDate({from: accounts[0]}) + 100, {from: accounts[0]}),
             'Error, End Date cannot be before Start Date'
         )
 
@@ -191,6 +183,16 @@ contract('Election', function(accounts) {
         await truffleAssert.reverts(
             electionInstance.startElection({from: accounts[0]}),
             'Error, cannot start election that has already started'
+        )
+
+        await truffleAssert.reverts(
+            electionInstance.changeStartDate(100, {from: accounts[0]}),
+            'Error, election has started'
+        )
+
+        await truffleAssert.reverts(
+            electionInstance.changeEndDate(electionInstance.getEndDate({from: accounts[0]}) + 100, {from: accounts[0]}),
+            'Error, End Date cannot be before Start Date'
         )
 
     })
