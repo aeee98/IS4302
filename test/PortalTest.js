@@ -323,30 +323,39 @@ contract('Election', function(accounts) {
 
     it('Vote', async () => {
         let vote1 = await electionInstance.vote('S1234567A', 'passwordA', 1, {from: accounts[0]});
+        let vote2 = await electionInstance.vote('S1234567B', 'passwordB', 1, {from: accounts[0]});
+        let vote3 = await electionInstance.vote('S1234567C', 'passwordC', 1, {from: accounts[0]});
+        let vote4 = await electionInstance.vote('S1234567D', 'passwordD', 1, {from: accounts[0]});
+        let vote5 = await electionInstance.vote('S1234567E', 'passwordE', 2, {from: accounts[0]});
+        let vote6 = await electionInstance.vote('S1234567F', 'passwordF', 3, {from: accounts[0]});
+        let vote7 = await electionInstance.vote('S1234567G', 'passwordG', 3, {from: accounts[0]});
+        let vote8 = await electionInstance.vote('S1234567H', 'passwordH', 3, {from: accounts[0]});
+        let vote9 = await electionInstance.vote('S1234567I', 'passwordI', 4, {from: accounts[0]});
+        let vote10 = await electionInstance.vote('S1234567J', 'passwordJ', 5, {from: accounts[0]});
+        
         truffleAssert.eventEmitted(vote1, 'VoteSucceeded');
+        truffleAssert.eventEmitted(vote2, 'VoteSucceeded');
+        truffleAssert.eventEmitted(vote3, 'VoteSucceeded');
+        truffleAssert.eventEmitted(vote4, 'VoteSucceeded');
+        truffleAssert.eventEmitted(vote5, 'VoteSucceeded');
+        truffleAssert.eventEmitted(vote6, 'VoteSucceeded');
+        truffleAssert.eventEmitted(vote7, 'VoteSucceeded');
+        truffleAssert.eventEmitted(vote8, 'VoteSucceeded');
+        truffleAssert.eventEmitted(vote9, 'VoteSucceeded');
+        truffleAssert.eventEmitted(vote10, 'VoteSucceeded');
 
         await truffleAssert.reverts(
-            electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordB', {from: accounts[0]}), 1, {from: accounts[0]}),
+            electionInstance.vote('S1234567A', 'passwordB', 1, {from: accounts[0]}),
             'Error, authentication failure'
         );
 
         await truffleAssert.reverts(
-            electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordA', {from: accounts[0]}), 1, {from: accounts[0]}),
+            electionInstance.vote('S1234567A', 'passwordA', 1, {from: accounts[0]}),
             'Has already voted'
         );
 
         await truffleAssert.reverts(
-            electionInstance.vote(0, 1, {from: accounts[2]}),
-            'Error, voteCode is not valid'
-        );
-
-        await truffleAssert.reverts(
-            electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordA', {from: accounts[0]}), 1, {from: accounts[0]}),
-            'Error, vote has already been cast'
-        );
-
-        await truffleAssert.reverts(
-            electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordA', {from: accounts[0]}), 10, {from: accounts[0]}),
+            electionInstance.vote('S1234567B', 'passwordB', 10, {from: accounts[0]}),
             'Error, invalid candidateId'
         );
 
