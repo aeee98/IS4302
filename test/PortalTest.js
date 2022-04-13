@@ -2,7 +2,7 @@ const _deploy_contracts = require("../migrations/2_deploy_contracts.js");
 const truffleAssert = require('truffle-assertions');
 var assert = require('assert');
 const { syncBuiltinESMExports } = require("module");
-const time = require('@openzeppelin/test-helpers'); // pip install --save-dev @openzeppelin/test-helpers
+const {BN, time} = require('@openzeppelin/test-helpers'); // pip install --save-dev @openzeppelin/test-helpers
 
 var ElectionPortal = artifacts.require("../contracts/ElectionPortal.sol");
 var ElectionAdministrator = artifacts.require("../contracts/ElectionAdministrator.sol");
@@ -249,7 +249,7 @@ contract('Election', function(accounts) {
     // adminOnly modifier is tested here and will not be tested in subsequent unit tests
     it('Change start date', async() => {
 
-        let changeStartDate1 = await electionInstance.changeStartDate(100, {from: accounts[0]});
+        let changeStartDate1 = await electionInstance.changeStartDate(new BN(block.timstamp).plus(new BN(100)), {from: accounts[0]});
 
         assert.notStrictEqual(
             changeStartDate1,
@@ -258,7 +258,7 @@ contract('Election', function(accounts) {
         );
 
         await truffleAssert.reverts(
-            electionInstance.changeStartDate(block.timestamp - 1, {from: accounts[0]}),
+            electionInstance.changeStartDate(new BN(block.timestamp).minus(new BN(100)), {from: accounts[0]}),
             'Error, Start Date has passed'
         );
 
@@ -266,7 +266,7 @@ contract('Election', function(accounts) {
 
     it('Change end date', async() => {
 
-        let changeEndDate1 = await electionInstance.changeEndDate(electionInstance.getEndDate({from: accounts[0]}) + 100, {from: accounts[0]})
+        let changeEndDate1 = await electionInstance.changeEndDate(new BN(electionInstance.getEndDate({from: accounts[0]})).plus(new BN(100)), {from: accounts[0]})
 
         assert.notStrictEqual(
             changeEndDate1,
@@ -275,12 +275,7 @@ contract('Election', function(accounts) {
         );
 
         await truffleAssert.reverts(
-            electionInstance.changeEndDate(electionInstance.getEndDate({from: accounts[0]}) + 100, {from: accounts[0]}),
-            'Error, End Date cannot be before Start Date'
-        )
-
-        await truffleAssert.reverts(
-            electionInstance.changeEndDate(electionInstance.getStartDate({from: accounts[0]}) - 100, {from: accounts[0]}),
+            electionInstance.changeEndDate(new BN(electionInstance.getStartDate({from: accounts[0]})).minus(new BN(100)), {from: accounts[0]}),
             'Error, End Date cannot be before Start Date'
         )
     })
@@ -322,6 +317,17 @@ contract('Election', function(accounts) {
     })
 
     it('Vote', async () => {
+
+        await truffleAssert.reverts(
+            electionInstance.vote('S1234567B', 'passwordB', 10, {from: accounts[0]}),
+            'Error, invalid candidateId'
+        )
+
+        await truffleAssert.reverts(
+            electionInstance.vote('S1234567A', 'passwordB', 1, {from: accounts[0]}),
+            'Error, authentication failure'
+        )
+
         let vote1 = await electionInstance.vote('S1234567A', 'passwordA', 1, {from: accounts[0]});
         let vote2 = await electionInstance.vote('S1234567B', 'passwordB', 1, {from: accounts[0]});
         let vote3 = await electionInstance.vote('S1234567C', 'passwordC', 1, {from: accounts[0]});
@@ -345,18 +351,18 @@ contract('Election', function(accounts) {
         truffleAssert.eventEmitted(vote10, 'VoteSucceeded');
 
         await truffleAssert.reverts(
-            electionInstance.vote('S1234567A', 'passwordB', 1, {from: accounts[0]}),
-            'Error, authentication failure'
-        )
-
-        await truffleAssert.reverts(
             electionInstance.vote('S1234567A', 'passwordA', 1, {from: accounts[0]}),
             'Has already voted'
         )
 
         await truffleAssert.reverts(
-            electionInstance.vote('S1234567B', 'passwordB', 10, {from: accounts[0]}),
-            'Error, invalid candidateId'
+            electionInstance.getWinner({from: accounts[0]}),
+            'Error, election has not ended yet'
+        )
+
+        await truffleAssert.reverts(
+            electionInstance.settleResults({from: accounts[0]}),
+            'Result not available yet'
         )
 
     });
@@ -405,10 +411,9 @@ contract('Election', function(accounts) {
         // results already settled
         let settleResults3 = await electionInstance.settleResults({from: accounts[0]})
 
-
         await truffleAssert.reverts(
-            electionInstance.settleResults({from: accounts[0]}),
-            'Result not available yet'
+            electionInstance.getWinner('Bukit Timah', {from: accounts[0]}), // placeholder region name
+            'Results not set up yet'
         )
 
         assert.notStrictEqual(
@@ -450,26 +455,7 @@ contract('Election', function(accounts) {
         }
         
         await truffleAssert.reverts(
-            electionInstance.getWinner({from: accounts[0]}),
-            'Error, election has not ended yet'
-        )
-        
-        await truffleAssert.reverts(
-            async() => {
-                time.increasTo(electionInstance.getEndDate({from: accounts[0]}))
-                electionInstance.endElection({from: accounts[0]})
-                electionInstance.getWinner('Bukit Timah', {from: accounts[0]}) // placeholder region name
-            },
-            'Results not set up yet'
-        )
-        
-        await truffleAssert.reverts(
-            async() => {
-                time.increasTo(electionInstance.getEndDate({from: accounts[0]}))
-                electionInstance.endElection({from: accounts[0]})
-                electionInstance.settleResults({from: accounts[0]})
-                electionInstance.getWinner('Woodlands', {from: accounts[0]}) // placeholder region name
-            },
+            electionInstance.getWinner('Woodlands', {from: accounts[0]}), // placeholder region name
             'Region Name does not exist'
         )
 
