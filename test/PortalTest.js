@@ -212,7 +212,7 @@ contract('Election', function(accounts) {
         );
 
         await truffleAssert.reverts(
-            electionInstance.changeStartDate(electionInstance.getStartDate({from: accounts[0]}) - 1, {from: accounts[0]}),
+            electionInstance.changeStartDate(block.timestamp - 1, {from: accounts[0]}),
             'Error, Start Date has passed'
         )
 
@@ -280,11 +280,7 @@ contract('Election', function(accounts) {
         // test normal vote
         let vote1 = await electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordA', {from: accounts[0]}), 1, {from: accounts[0]})
         
-        assert.notStrictEqual(
-            vote1,
-            undefined,
-            "Failed to cast vote"
-        );
+        truffleAssert.eventEmitted(vote1, 'VoteSucceeded');
 
         await truffleAssert.reverts(
             electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordB', {from: accounts[0]}), 1, {from: accounts[0]}),
