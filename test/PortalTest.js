@@ -249,7 +249,7 @@ contract('Election', function(accounts) {
     // adminOnly modifier is tested here and will not be tested in subsequent unit tests
     it('Change start date', async() => {
 
-        let changeStartDate1 = await electionInstance.changeStartDate(new BN(block.timstamp).plus(new BN(100)), {from: accounts[0]});
+        let changeStartDate1 = await electionInstance.changeStartDate(new BN(Date.now()).add(new BN(2000)), {from: accounts[0]});
 
         assert.notStrictEqual(
             changeStartDate1,
@@ -258,7 +258,7 @@ contract('Election', function(accounts) {
         );
 
         await truffleAssert.reverts(
-            electionInstance.changeStartDate(new BN(block.timestamp).minus(new BN(100)), {from: accounts[0]}),
+            electionInstance.changeStartDate(new BN(Date.now()).sub(new BN(2000)), {from: accounts[0]}),
             'Error, Start Date has passed'
         );
 
@@ -266,7 +266,7 @@ contract('Election', function(accounts) {
 
     it('Change end date', async() => {
 
-        let changeEndDate1 = await electionInstance.changeEndDate(new BN(electionInstance.getEndDate({from: accounts[0]})).plus(new BN(100)), {from: accounts[0]})
+        let changeEndDate1 = await electionInstance.changeEndDate(new BN(await electionInstance.getEndDate({from: accounts[0]})).add(new BN(2000)), {from: accounts[0]})
 
         assert.notStrictEqual(
             changeEndDate1,
@@ -275,7 +275,7 @@ contract('Election', function(accounts) {
         );
 
         await truffleAssert.reverts(
-            electionInstance.changeEndDate(new BN(electionInstance.getStartDate({from: accounts[0]})).minus(new BN(100)), {from: accounts[0]}),
+            electionInstance.changeEndDate(new BN(await electionInstance.getStartDate({from: accounts[0]})).sub(new BN(2000)), {from: accounts[0]}),
             'Error, End Date cannot be before Start Date'
         )
     })
