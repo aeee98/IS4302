@@ -177,24 +177,56 @@ contract('Election', function(accounts) {
     });
 
     it('Add Candidate', async () => {
-        addCandidate1 = await electionInstance.addCandidate("John", 1, "vote", {from: accounts[0]});
+        addCandidate1 = await electionInstance.addCandidate("John Lee", 1, "vote", {from: accounts[0]});
 
         assert.notStrictEqual(
             addCandidate1,
             undefined,
             "Failed to add candidate"
         );
+
+        addCandidate2 = await electionInstance.addCandidate("Tan Ah Beng", 1, "vote", {from: accounts[0]});
+        
+        assert.notStrictEqual(
+            addCandidate2,
+            undefined,
+            "Failed to add candidate"
+        );
+
+        let regionCheck1 = await electionInstance.getRegion(1);
+        assert.equal(regionCheck1.candidates.length, 2, "Error, not the correct number of people");
+
+        addCandidate3 = await electionInstance.addCandidate("Kenny Lee", 2, "vote", {from: accounts[0]});
+
+        assert.notStrictEqual(
+            addCandidate3,
+            undefined,
+            "Failed to add candidate"
+        );
+
+        addCandidate4 = await electionInstance.addCandidate("Tan Soon Heng", 2, "vote", {from: accounts[0]});
+        
+        assert.notStrictEqual(
+            addCandidate4,
+            undefined,
+            "Failed to add candidate"
+        );
+
+        assert.equal(regionCheck2.candidates.length, 2, "Error, not the correct number of people");
     });
+
+    
 
     it('Add Voters', async () => {
-    });
-
-    // WIP
-    it('Authenticate Voter', async () => {
-
-        var authenticateVoter1 = await electionInstance.authenticateVoter("S12345678A", "password", {from: accounts[0]});
 
     });
+
+    // // WIP
+    // it('Authenticate Voter', async () => {
+
+    //     var authenticateVoter1 = await electionInstance.authenticateVoter("S12345678A", "password", {from: accounts[0]});
+
+    // });
 
     it('Vote', async () => {
         
