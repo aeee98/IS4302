@@ -5,7 +5,7 @@ import "./ElectionAdministrator.sol";
 import "./util/StringUtils.sol";
 
 /** 
- * @dev The Election  Contract contains the information of the particular election. This includes the ability to start and stop an election, 
+ * @dev The Election Contract contains the information of the particular election. This includes the ability to start and stop an election, 
  * voters and regions that are available and also the ability to vote for the candidates.
  * 
  * In the current implementation, self-destruction is not possible to prevent exploitation.
@@ -47,13 +47,13 @@ contract Election {
     mapping(bytes32 => bytes32) private voters; //Hashed nric to hashed password
     mapping(bytes32 => bool) private hasRegisteredVote; //Hashed nric to true/false value, by default it is false
     mapping(bytes32 => uint16) private voterRegions; //Hashed nric to regionId
-    mapping(uint256 => uint16) private voteValidity; //voteCode to regionId
-    mapping(uint256 => bytes32) private votes; //voteCode to hashed candidateId. Votes are still needed for verification purposes even with counts accounted for, probably only by admins.
+    mapping(bytes32 => bytes32) private votes; //voteCode to hashed candidateId. Votes are still needed for verification purposes even with counts accounted for, probably only by admins.
     mapping(bytes32 => uint256) private votecounts; // Candidate -> votes 
 
     event VotersAddedInRegion(uint16 regionId, uint256 count);
     event VoteSucceeded();
     event ElectionWinner(string region, string candidate, uint256 votes);
+    event RegionCheck(Region region);
 
     //TODO: Handle Voting Process
 
@@ -69,6 +69,11 @@ contract Election {
 
     modifier alreadyStarted {
         require(hasStarted == true);
+        _;
+    }
+
+    modifier alreadyEnded {
+        require(hasEnded == true);
         _;
     }
 
@@ -125,31 +130,23 @@ contract Election {
     }
 
     /*
-     * @dev Authenticates the voter, generates the vote code and gives it to user. 
+     * @dev Authenticates the voter, approves the voting based on the system and approves the vote if successful. 
      */
-    function authenticateVoter(string memory _nric, string memory _password) public returns (uint256) {
+    function vote(string memory _nric, string memory _password, uint16 _candidateId) public {
+        require(hasStarted == true && hasEnded == false, "Error, not available for voting");
         require(voters[keccak256(abi.encodePacked(_nric))] == keccak256(abi.encodePacked(_password)), "Error, authentication failure");
         require(hasRegisteredVote[keccak256(abi.encodePacked(_nric))] == false, "Has already voted");
+        
+
         uint16 regionid = voterRegions[keccak256(abi.encodePacked(_nric))];
         Region memory voterRegion = regions[regionid];
-
+        emit RegionCheck(voterRegion);
         require(voterRegion.valid, "Invalid Region");
-        uint256 voteCode = uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, _nric)));
 
         // add voteCode to voteCodes[] for testing
         // voteCodes.push(voteCode);
 
-        hasRegisteredVote[keccak256(abi.encodePacked(_nric))] = true;
-        voteValidity[voteCode] = regionid;
-        return voteCode;
-    }
-
-    function vote(uint256 _voteCode, uint16 _candidateId) public {
-        require(voteValidity[_voteCode] > 0, "Error, voteCode is not valid");
-        require(hasStarted == true && hasEnded == false, "Error, not available for voting");
-        require(votes[_voteCode] == bytes32(0), "Error, vote has already been cast");
-
-        uint16[] memory voterRegionCandidates = regions[voteValidity[_voteCode]].candidatesList;
+        uint16[] memory voterRegionCandidates = regions[regionid].candidatesList;
         bool found = false;
         for (uint16 i=0; i<voterRegionCandidates.length; i++) {
             if(voterRegionCandidates[i] == _candidateId) {
@@ -158,8 +155,9 @@ contract Election {
             }
         }
         require(found == true, "Error, invalid candidateId");
+        hasRegisteredVote[keccak256(abi.encodePacked(_nric))] = true;
 
-        votes[_voteCode] = keccak256(abi.encodePacked(_candidateId)); //Encrypt candidate id only
+        votes[keccak256(abi.encodePacked(_nric))] = keccak256(abi.encodePacked(_candidateId)); //Encrypt candidate id and nric
 
         emit VoteSucceeded();
         //voteCodes.(_voteCode); //Voted
@@ -167,6 +165,32 @@ contract Election {
 
         votecounts[keccak256(abi.encodePacked(_candidateId))] += 1;
     }
+
+    // function vote(bytes32 _voteCode, uint16 _candidateId) public {
+    //     //require(voteValidity[_voteCode] > 0, "Error, voteCode is not valid");
+        
+    //     require(votes[_voteCode] == bytes32(0), "Error, vote has already been cast");
+
+    //     emit VoteTried(_voteCode);
+
+    //     uint16[] memory voterRegionCandidates = regions[voteValidity[_voteCode]].candidatesList;
+    //     bool found = false;
+    //     for (uint16 i=0; i<voterRegionCandidates.length; i++) {
+    //         if(voterRegionCandidates[i] == _candidateId) {
+    //             found = true;
+    //             break;
+    //         }
+    //     }
+    //     require(found == true, "Error, invalid candidateId");
+
+    //     votes[_voteCode] = keccak256(abi.encodePacked(_candidateId)); //Encrypt candidate id only
+
+    //     emit VoteSucceeded();
+    //     //voteCodes.(_voteCode); //Voted
+    //     //add vote to count.
+
+    //     votecounts[keccak256(abi.encodePacked(_candidateId))] += 1;
+    // }
 
     function getCandidatesByRegion(uint16 _regionId) public view returns (uint16[] memory) {
         return regions[_regionId].candidatesList;
@@ -273,4 +297,12 @@ contract Election {
     function checkExists() public view returns (bool) {
         return exists;
     }
-}
+
+    function getVoteCount(uint16 _candidateId) public view alreadyEnded returns (uint256) {
+        return votecounts[keccak256(abi.encodePacked(_candidateId))];
+    }
+
+    function getAllowedRegion(string memory _nric) public view returns (uint16) {
+        return voterRegions[keccak256(abi.encodePacked(_nric))];
+    }
+ }
