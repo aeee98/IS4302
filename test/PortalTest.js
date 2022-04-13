@@ -9,135 +9,135 @@ var ElectionAdministrator = artifacts.require("../contracts/ElectionAdministrato
 var Election = artifacts.require("../contracts/Election.sol");
 
 
-// /* Election Administrator Tests */
-// contract("ElectionAdministrator", function(accounts) {
-//     before(async () => {
-//         ElectionAdministratorInstance = await ElectionAdministrator.deployed();
-//     });
-//     console.log("Testing ElectionAdmin Contract");
+/* Election Administrator Tests */
+contract("ElectionAdministrator", function(accounts) {
+    before(async () => {
+        ElectionAdministratorInstance = await ElectionAdministrator.deployed();
+    });
+    console.log("Testing ElectionAdmin Contract");
 
-//     it("Test Admin Addition after deployment", async () => {
-//         let addAdmin = await ElectionAdministratorInstance.addAdministrator(accounts[2], {from: accounts[0]});
-//         truffleAssert.eventEmitted(addAdmin, 'AdministratorAdded');
-//     });
+    it("Test Admin Addition after deployment", async () => {
+        let addAdmin = await ElectionAdministratorInstance.addAdministrator(accounts[2], {from: accounts[0]});
+        truffleAssert.eventEmitted(addAdmin, 'AdministratorAdded');
+    });
 
-//     it("Test Admin Only Modifier", async () => {
-//         //let illegalAddAdmin = await ElectionAdministratorInstance.addAdministrator(accounts[2], {from: accounts[5]});
-//         truffleAssert.reverts(ElectionAdministratorInstance.addAdministrator(accounts[2], {from: accounts[5]}), "Admin only");
-//     });
+    it("Test Admin Only Modifier", async () => {
+        //let illegalAddAdmin = await ElectionAdministratorInstance.addAdministrator(accounts[2], {from: accounts[5]});
+        truffleAssert.reverts(ElectionAdministratorInstance.addAdministrator(accounts[2], {from: accounts[5]}), "Admin only");
+    });
 
-//     it("Is Administrator: true", async () => {
-//         let adminTrueTest = await ElectionAdministratorInstance.isAdministrator(accounts[0]);
-//         assert.strictEqual(adminTrueTest, true)
-//     });
+    it("Is Administrator: true", async () => {
+        let adminTrueTest = await ElectionAdministratorInstance.isAdministrator(accounts[0]);
+        assert.strictEqual(adminTrueTest, true)
+    });
 
-//     it("Is Administrator: false", async () => {
-//         let adminTrueTest = await ElectionAdministratorInstance.isAdministrator(accounts[5]);
-//         assert.strictEqual(adminTrueTest, false)
-//     });
+    it("Is Administrator: false", async () => {
+        let adminTrueTest = await ElectionAdministratorInstance.isAdministrator(accounts[5]);
+        assert.strictEqual(adminTrueTest, false)
+    });
 
-//     it("Removing Admin Who Doesn't Exist", async () => {
-//         let removeNonAdmin = await ElectionAdministratorInstance.setPendingRemoval(accounts[5], {from: accounts[0]});
-//         truffleAssert.eventEmitted(removeNonAdmin, 'AdministratorDoesNotExist');
-//     });
+    it("Removing Admin Who Doesn't Exist", async () => {
+        let removeNonAdmin = await ElectionAdministratorInstance.setPendingRemoval(accounts[5], {from: accounts[0]});
+        truffleAssert.eventEmitted(removeNonAdmin, 'AdministratorDoesNotExist');
+    });
 
-//     it("Set pending Removal", async () => {
-//         let addAdmin3 = await ElectionAdministratorInstance.addAdministrator(accounts[3], {from: accounts[0]});
-//         let legalAdminDualRemoval = await ElectionAdministratorInstance.setPendingRemoval(accounts[2], {from: accounts[3]});
-//         truffleAssert.eventEmitted(legalAdminDualRemoval, 'AdministratorSetPendingRemoval');
-//     });
+    it("Set pending Removal", async () => {
+        let addAdmin3 = await ElectionAdministratorInstance.addAdministrator(accounts[3], {from: accounts[0]});
+        let legalAdminDualRemoval = await ElectionAdministratorInstance.setPendingRemoval(accounts[2], {from: accounts[3]});
+        truffleAssert.eventEmitted(legalAdminDualRemoval, 'AdministratorSetPendingRemoval');
+    });
 
-//     it("Admin Already pending Removal", async () => {
-//         let illegalAdminDualRemoval = await ElectionAdministratorInstance.setPendingRemoval(accounts[2], {from: accounts[3]});
-//         truffleAssert.eventEmitted(illegalAdminDualRemoval, 'AlreadyPendingRemoval');
-//     });
+    it("Admin Already pending Removal", async () => {
+        let illegalAdminDualRemoval = await ElectionAdministratorInstance.setPendingRemoval(accounts[2], {from: accounts[3]});
+        truffleAssert.eventEmitted(illegalAdminDualRemoval, 'AlreadyPendingRemoval');
+    });
 
-//     it("Cannot approve Own Removal Request", async () => {
-//         truffleAssert.reverts(ElectionAdministratorInstance.approveRemoval(accounts[2], {from: accounts[3]}), "You cannot approve a removal that you have made.");
-//     });
+    it("Cannot approve Own Removal Request", async () => {
+        truffleAssert.reverts(ElectionAdministratorInstance.approveRemoval(accounts[2], {from: accounts[3]}), "You cannot approve a removal that you have made.");
+    });
 
-//     it("Cannot remove yourself approval", async () => {
-//         truffleAssert.reverts(ElectionAdministratorInstance.approveRemoval(accounts[3], {from: accounts[3]}), "You cannot approve or reject a removal of yourself");
-//     });
+    it("Cannot remove yourself approval", async () => {
+        truffleAssert.reverts(ElectionAdministratorInstance.approveRemoval(accounts[3], {from: accounts[3]}), "You cannot approve or reject a removal of yourself");
+    });
 
-//     it("Cannot remove yourself rejection", async () => {
-//         truffleAssert.reverts(ElectionAdministratorInstance.rejectRemoval(accounts[3], {from: accounts[3]}), "You cannot approve or reject a removal of yourself");
-//     });
+    it("Cannot remove yourself rejection", async () => {
+        truffleAssert.reverts(ElectionAdministratorInstance.rejectRemoval(accounts[3], {from: accounts[3]}), "You cannot approve or reject a removal of yourself");
+    });
 
-//     it("Not Pending Removal Yet: Approval", async () => {
-//         truffleAssert.reverts(ElectionAdministratorInstance.approveRemoval(accounts[0], {from: accounts[3]}), "The administrator has not been set to pending removal yet");
-//     });
+    it("Not Pending Removal Yet: Approval", async () => {
+        truffleAssert.reverts(ElectionAdministratorInstance.approveRemoval(accounts[0], {from: accounts[3]}), "The administrator has not been set to pending removal yet");
+    });
 
-//     it("Not Pending Removal Yet: Rejection", async () => {
-//         truffleAssert.reverts(ElectionAdministratorInstance.rejectRemoval(accounts[0], {from: accounts[3]}), "The administrator has not been set to pending removal yet");
-//     });
+    it("Not Pending Removal Yet: Rejection", async () => {
+        truffleAssert.reverts(ElectionAdministratorInstance.rejectRemoval(accounts[0], {from: accounts[3]}), "The administrator has not been set to pending removal yet");
+    });
 
-//     it("Test Admin Addition after admin had been added", async () => {
-//         let addAdmin2 = await ElectionAdministratorInstance.addAdministrator(accounts[1], {from: accounts[2]});
-//         truffleAssert.eventEmitted(addAdmin2, 'AdministratorAdded');
-//     });
+    it("Test Admin Addition after admin had been added", async () => {
+        let addAdmin2 = await ElectionAdministratorInstance.addAdministrator(accounts[1], {from: accounts[2]});
+        truffleAssert.eventEmitted(addAdmin2, 'AdministratorAdded');
+    });
 
-//     it("Adding Already Existing admin", async () => {
-//         let addAdmin3 = await ElectionAdministratorInstance.addAdministrator(accounts[1], {from: accounts[2]});
-//         truffleAssert.eventEmitted(addAdmin3, 'AdministratorAlreadyExists');
-//     });
+    it("Adding Already Existing admin", async () => {
+        let addAdmin3 = await ElectionAdministratorInstance.addAdministrator(accounts[1], {from: accounts[2]});
+        truffleAssert.eventEmitted(addAdmin3, 'AdministratorAlreadyExists');
+    });
 
-//     it("Removing admin approval", async () => {
-//         let removeAdmin1 = await ElectionAdministratorInstance.setPendingRemoval(accounts[2], {from: accounts[1]});
-//         let approveRemove1 = await ElectionAdministratorInstance.approveRemoval(accounts[2], {from: accounts[0]});
-//         truffleAssert.eventEmitted(approveRemove1, 'AdministratorApprovedRemoval');
-//     });
+    it("Removing admin approval", async () => {
+        let removeAdmin1 = await ElectionAdministratorInstance.setPendingRemoval(accounts[2], {from: accounts[1]});
+        let approveRemove1 = await ElectionAdministratorInstance.approveRemoval(accounts[2], {from: accounts[0]});
+        truffleAssert.eventEmitted(approveRemove1, 'AdministratorApprovedRemoval');
+    });
 
-//     it("Removing admin rejection", async () => {
-//         let addAdmin = await ElectionAdministratorInstance.addAdministrator(accounts[3], {from: accounts[0]});
-//         let removeAdmin = await ElectionAdministratorInstance.setPendingRemoval(accounts[3], {from: accounts[1]});
-//         let rejectRemove1 = await ElectionAdministratorInstance.rejectRemoval(accounts[3], {from: accounts[0]});
-//         truffleAssert.eventEmitted(rejectRemove1, 'AdministratorRejectRemoval');
-//     });
+    it("Removing admin rejection", async () => {
+        let addAdmin = await ElectionAdministratorInstance.addAdministrator(accounts[3], {from: accounts[0]});
+        let removeAdmin = await ElectionAdministratorInstance.setPendingRemoval(accounts[3], {from: accounts[1]});
+        let rejectRemove1 = await ElectionAdministratorInstance.rejectRemoval(accounts[3], {from: accounts[0]});
+        truffleAssert.eventEmitted(rejectRemove1, 'AdministratorRejectRemoval');
+    });
 
-//     it("cannot remove any more admins if <= 2 admins", async () => {
-//         let removeAdmin2 = await ElectionAdministratorInstance.setPendingRemoval(accounts[1], {from: accounts[0]});
-//         await truffleAssert.reverts(ElectionAdministratorInstance.approveRemoval(accounts[1], {from: accounts[0]}), "You cannot approve a removal that you have made.");
-//     });
+    it("cannot remove any more admins if <= 2 admins", async () => {
+        let removeAdmin2 = await ElectionAdministratorInstance.setPendingRemoval(accounts[1], {from: accounts[0]});
+        await truffleAssert.reverts(ElectionAdministratorInstance.approveRemoval(accounts[1], {from: accounts[0]}), "You cannot approve a removal that you have made.");
+    });
 
-// });
+});
 
 
-// /* ElectionPortal.js Tests */
-// contract('ElectionPortal', function(accounts) {
-//     before(async () => {
-//         electionAdminInstance = await ElectionAdministrator.deployed();
-//         electionInstance = await Election.deployed();
-//         electionPortalInstance = await ElectionPortal.deployed();
-//     });
+/* ElectionPortal.js Tests */
+contract('ElectionPortal', function(accounts) {
+    before(async () => {
+        electionAdminInstance = await ElectionAdministrator.deployed();
+        electionInstance = await Election.deployed();
+        electionPortalInstance = await ElectionPortal.deployed();
+    });
 
-//     it('Test Must Add Election First', async() => {
-//         await truffleAssert.reverts(electionPortalInstance.getLatestElection(), "Election does not exist");
-//     });
+    it('Test Must Add Election First', async() => {
+        await truffleAssert.reverts(electionPortalInstance.getLatestElection(), "Election does not exist");
+    });
 
-//     it('Test Add Election', async() => {
-//         let addElection = await electionPortalInstance.addNewElection(electionInstance.address, 2022);
-//         truffleAssert.eventEmitted(addElection, "ElectionAdded");
-//     });
+    it('Test Add Election', async() => {
+        let addElection = await electionPortalInstance.addNewElection(electionInstance.address, 2022);
+        truffleAssert.eventEmitted(addElection, "ElectionAdded");
+    });
 
-//     it('Test Can View Election', async() => {
-//         let getElection = await electionPortalInstance.getElection(2022);
-//         assert.equal(getElection, electionInstance.address);
-//     });
+    it('Test Can View Election', async() => {
+        let getElection = await electionPortalInstance.getElection(2022);
+        assert.equal(getElection, electionInstance.address);
+    });
 
-//     it('Test Invalid Election Reverts', async() => {
-//         await truffleAssert.reverts(electionPortalInstance.getElection(500), "Election does not exist");
-//     });
+    it('Test Invalid Election Reverts', async() => {
+        await truffleAssert.reverts(electionPortalInstance.getElection(500), "Election does not exist");
+    });
 
-//     it('Test Can View Latest Election', async() => {
-//         let lastestElection = await electionPortalInstance.getLatestElection();
-//         assert.equal(lastestElection, electionInstance.address);
-//     });
+    it('Test Can View Latest Election', async() => {
+        let lastestElection = await electionPortalInstance.getLatestElection();
+        assert.equal(lastestElection, electionInstance.address);
+    });
 
-//     // sleep code (no longer needed for portal, but leaving here just in case)
-//     // source for sleep code: https://blog.devgenius.io/how-to-make-javascript-sleep-or-wait-d95d33c99909
-//     // const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
-// });
+    // sleep code (no longer needed for portal, but leaving here just in case)
+    // source for sleep code: https://blog.devgenius.io/how-to-make-javascript-sleep-or-wait-d95d33c99909
+    // const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
+});
 
 /* Election.js tests */
 contract('Election', function(accounts) {
@@ -325,38 +325,30 @@ contract('Election', function(accounts) {
         let vote1 = await electionInstance.vote('S1234567A', 'passwordA', 1, {from: accounts[0]});
         truffleAssert.eventEmitted(vote1, 'VoteSucceeded');
 
-        // let regionCheck = await electionInstance.getAllowedVoterRegion.call(voteCode1, {from: accounts[0]});
-        
-        // console.log(String(regionCheck));
+        await truffleAssert.reverts(
+            electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordB', {from: accounts[0]}), 1, {from: accounts[0]}),
+            'Error, authentication failure'
+        )
 
-        // test normal vote
-        //let vote1 = await electionInstance.vote(voteCode1, 1, {from: accounts[0]});
-        
+        await truffleAssert.reverts(
+            electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordA', {from: accounts[0]}), 1, {from: accounts[0]}),
+            'Has already voted'
+        )
 
-        // await truffleAssert.reverts(
-        //     electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordB', {from: accounts[0]}), 1, {from: accounts[0]}),
-        //     'Error, authentication failure'
-        // )
+        await truffleAssert.reverts(
+            electionInstance.vote(0, 1, {from: accounts[2]}),
+            'Error, voteCode is not valid'
+        )
 
-        // await truffleAssert.reverts(
-        //     electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordA', {from: accounts[0]}), 1, {from: accounts[0]}),
-        //     'Has already voted'
-        // )
+        await truffleAssert.reverts(
+            electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordA', {from: accounts[0]}), 1, {from: accounts[0]}),
+            'Error, vote has already been cast'
+        )
 
-        // await truffleAssert.reverts(
-        //     electionInstance.vote(0, 1, {from: accounts[2]}),
-        //     'Error, voteCode is not valid'
-        // )
-
-        // await truffleAssert.reverts(
-        //     electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordA', {from: accounts[0]}), 1, {from: accounts[0]}),
-        //     'Error, vote has already been cast'
-        // )
-
-        // await truffleAssert.reverts(
-        //     electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordA', {from: accounts[0]}), 10, {from: accounts[0]}),
-        //     'Error, invalid candidateId'
-        // )
+        await truffleAssert.reverts(
+            electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordA', {from: accounts[0]}), 10, {from: accounts[0]}),
+            'Error, invalid candidateId'
+        )
 
     });
 
