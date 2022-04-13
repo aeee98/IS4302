@@ -8,7 +8,8 @@ unit testing assumptions:
 
 const _deploy_contracts = require("../migrations/2_deploy_contracts");
 const truffleAssert = require('truffle-assertions');
-const time = require('openzeppelin-test-helpers');
+const time = require('@openzeppelin/test-helpers'); // pip install --save-dev @openzeppelin/test-helpers
+
 var assert = require('assert');
 const { start } = require("repl");
 
@@ -91,7 +92,7 @@ contract('Election', function(accounts) {
             vote1,
             undefined,
             "Failed to cast vote"
-        )
+        );
 
         await truffleAssert.reverts(
             async () => {
@@ -131,14 +132,14 @@ contract('Election', function(accounts) {
             changeStartDate1,
             undefined,
             "Failed to change start date"
-        )
+        );
 
         await truffleAssert.reverts(
             electionInstance.changeStartDate(electionInstance.getStartDate({from: accounts[0]}) - 1, {from: accounts[0]}),
             'Error, Start Date has passed'
         )
 
-    })
+    });
 
     it('Change end date', async() => {
 
@@ -148,7 +149,7 @@ contract('Election', function(accounts) {
             changeEndDate1,
             undefined,
             "Failed to change end date"
-        )
+        );
 
         await truffleAssert.reverts(
             electionInstance.changeEndDate(electionInstance.getEndDate({from: accounts[0]}) + 100, {from: accounts[0]}),
@@ -178,7 +179,7 @@ contract('Election', function(accounts) {
             startElection2,
             undefined,
             "Failed to start election"
-        )
+        );
 
         await truffleAssert.reverts(
             electionInstance.startElection({from: accounts[0]}),
@@ -201,7 +202,7 @@ contract('Election', function(accounts) {
 
         // election ended
         let endElection2 = async() => {
-            time.increasTo(electionInstance.getEndDate({from: accounts[0]}))
+            time.increaseTo(electionInstance.getEndDate({from: accounts[0]}))
             electionInstance.endElection({from: accounts[0]})
         } 
 
@@ -209,19 +210,19 @@ contract('Election', function(accounts) {
             electionInstance.endElection({from: accounts[0]}),
             'Error, ensure to only end after end time'
         )
-        
+        ;
         assert.notStrictEqual(
             endElection2,
             undefined,
             "Failed to end election"
-        )
+        );
 
         await truffleAssert.reverts(
             electionInstance.endElection({from: accounts[0]}),
             'Error, election has already ended'
         )
 
-    })
+    });
 
     it('Settle results', async() => {
 
@@ -246,14 +247,14 @@ contract('Election', function(accounts) {
             settleResults2,
             undefined,
             "Failed to settle results"
-        )
+        );
 
         await truffleAssert.reverts(
             electionInstance.settleResults({from: accounts[0]}),
             'Results already settled'
-        )
+        );
 
-    })
+    });
 
     it('Get winner', async() => {
 
@@ -308,9 +309,8 @@ contract('Election', function(accounts) {
             getWinner4,
             undefined,
             "Failed to get winner"
-        )
+        );
 
-    })
+    });
 
-}
-)
+});

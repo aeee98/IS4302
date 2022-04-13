@@ -4,6 +4,12 @@ pragma solidity ^0.8.0;
 import "./ElectionAdministrator.sol";
 import "./util/StringUtils.sol";
 
+/** 
+ * @dev The Election Contract contains the information of the particular election. This includes the ability to start and stop an election, 
+ * voters and regions that are available and also the ability to vote for the candidates.
+ * 
+ * In the current implementation, self-destruction is not possible to prevent exploitation.
+ */
 contract Election {
 
     ElectionAdministrator private administratorContract;
@@ -43,10 +49,11 @@ contract Election {
     mapping(bytes32 => uint16) private voterRegions; //Hashed nric to regionId
     mapping(uint256 => uint16) private voteValidity; //voteCode to regionId
     mapping(uint256 => bytes32) private votes; //voteCode to hashed candidateId. Votes are still needed for verification purposes even with counts accounted for, probably only by admins.
-    mapping(bytes32 => uint32) private votecounts; // Candidate -> votes 
+    mapping(bytes32 => uint256) private votecounts; // Candidate -> votes 
 
+    event VotersAddedInRegion(uint16 regionId, uint256 count);
     event VoteSucceeded();
-    event ElectionWinner(string region, string candidate, uint32 votes);
+    event ElectionWinner(string region, string candidate, uint256 votes);
 
     //TODO: Handle Voting Process
 
@@ -62,6 +69,11 @@ contract Election {
 
     modifier alreadyStarted {
         require(hasStarted == true);
+        _;
+    }
+
+    modifier alreadyEnded {
+        require(hasEnded == true);
         _;
     }
 
@@ -83,10 +95,12 @@ contract Election {
         exists = true;
     }
 
+    //Unused Function at the moment. Possibly to create vote platforms that are allowed to do the voting.
     function addSystem(address pollsystem) public adminOnly hasNotStarted {
         allowedsystems[pollsystem] = true;
     }
 
+    //Unused Function at the moment. Possibly to remove vote platforms that are allowed to do the voting.
     function removeSystem(address pollsystem) public adminOnly hasNotStarted {
         allowedsystems[pollsystem] = false;
     }
@@ -101,6 +115,18 @@ contract Election {
         uint16[] memory candidatesList;
         regionsCount++;
         regions[regionsCount] = Region(regionsCount, _name, candidatesList, _electionTitle, true);
+    }
+
+
+    function addVoters(string[] memory _nricList, string[] memory _passwordList, uint16 regionId) public adminOnly hasNotStarted {
+        require (_nricList.length > 0, "Lists must contain something");
+        require (_nricList.length == _passwordList.length, "Both lists must be the same length");
+        for (uint i = 0; i < _nricList.length; ++i) {
+            voters[keccak256(abi.encodePacked(_nricList[i]))] = keccak256(abi.encodePacked(_passwordList[i]));
+            voterRegions[keccak256(abi.encodePacked(_nricList[i]))] = regionId;
+        }
+
+        emit VotersAddedInRegion(regionId, _nricList.length);
     }
 
     /*
@@ -146,6 +172,16 @@ contract Election {
 
         votecounts[keccak256(abi.encodePacked(_candidateId))] += 1;
     }
+
+    function getCandidatesByRegion(uint16 _regionId) public view returns (uint16[] memory) {
+        return regions[_regionId].candidatesList;
+    }
+
+    function getRegionByVoter(string memory _nric, string memory _password) public view returns (uint16) {
+        require(voters[keccak256(abi.encodePacked(_nric))] == keccak256(abi.encodePacked(_password)), "Error, authentication failure");
+        return voterRegions[keccak256(abi.encodePacked(_nric))];
+    }
+
 
     function getStartDate() public view returns (uint256) {
         return startDate;
@@ -204,7 +240,7 @@ contract Election {
             uint winner = 0;
 
             for (uint16 j = 0; j < regionCheck.candidatesList.length; j++) {
-                uint32 votecount =  votecounts[keccak256(abi.encodePacked(regionCheck.candidatesList[j]))];
+                uint256 votecount =  votecounts[keccak256(abi.encodePacked(regionCheck.candidatesList[j]))];
                 if (votecount > maxCount) {
                     maxCount = votecount;
                     winner = regionCheck.candidatesList[j];
@@ -243,14 +279,7 @@ contract Election {
         return exists;
     }
 
-/*
-    function getVoteCodes() public view returns (uint256[] memory) {
-        return voteCodes;
+    function getVoteCount(uint16 _candidateId) public view alreadyEnded returns (uint256) {
+        return votecounts[keccak256(abi.encodePacked(_candidateId))];
     }
-
-    // to use in testing
-    function setVoteCodes(uint256[] memory _voteCodes) public {
-        voteCodes = _voteCodes;
-    }
-*/
 }
