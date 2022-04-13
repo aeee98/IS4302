@@ -244,7 +244,7 @@ contract('Election', function(accounts) {
              electionInstance.addVoters(_nriclist1, ['1'], 1, {from: accounts[0]}),
             'Both lists must be the same length'
         );
-    })
+    });
 
     // adminOnly modifier is tested here and will not be tested in subsequent unit tests
     it('Change start date', async() => {
@@ -328,27 +328,27 @@ contract('Election', function(accounts) {
         await truffleAssert.reverts(
             electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordB', {from: accounts[0]}), 1, {from: accounts[0]}),
             'Error, authentication failure'
-        )
+        );
 
         await truffleAssert.reverts(
             electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordA', {from: accounts[0]}), 1, {from: accounts[0]}),
             'Has already voted'
-        )
+        );
 
         await truffleAssert.reverts(
             electionInstance.vote(0, 1, {from: accounts[2]}),
             'Error, voteCode is not valid'
-        )
+        );
 
         await truffleAssert.reverts(
             electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordA', {from: accounts[0]}), 1, {from: accounts[0]}),
             'Error, vote has already been cast'
-        )
+        );
 
         await truffleAssert.reverts(
             electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordA', {from: accounts[0]}), 10, {from: accounts[0]}),
             'Error, invalid candidateId'
-        )
+        );
 
     });
 
@@ -374,12 +374,12 @@ contract('Election', function(accounts) {
         await truffleAssert.reverts(
             electionInstance.endElection({from: accounts[0]}),
             'Error, election has already ended'
-        )
+        );
 
         await truffleAssert.reverts(
             electionInstance.vote(electionInstance.authenticateVoter('S1234567B', 'passwordB', {from: accounts[0]}), 1, {from: accounts[0]}),
             'Error, not available for voting'
-        )
+        );
 
     });
 
@@ -421,20 +421,20 @@ contract('Election', function(accounts) {
         let getWinner1 = await electionInstance.getWinner({from: accounts[0]})
         // results not yet settled, valid region
         let getWinner2 = async() => {
-            time.increasTo(electionInstance.getEndDate({from: accounts[0]}))
+            time.increaseTo(electionInstance.getEndDate({from: accounts[0]}))
             electionInstance.endElection({from: accounts[0]})
             electionInstance.getWinner('Bukit Timah', {from: accounts[0]}) // placeholder region name
         }
         // results settled, invalid region
         let getWinner3 = async() => {
-            time.increasTo(electionInstance.getEndDate({from: accounts[0]}))
+            time.increaseTo(electionInstance.getEndDate({from: accounts[0]}))
             electionInstance.endElection({from: accounts[0]})
             electionInstance.settleResults({from: accounts[0]})
             electionInstance.getWinner('Woodlands', {from: accounts[0]}) // placeholder region name
         }
         // get winner
         let getWinner4 = async() => {
-            time.increasTo(electionInstance.getEndDate({from: accounts[0]}))
+            time.increaseTo(electionInstance.getEndDate({from: accounts[0]}))
             electionInstance.endElection({from: accounts[0]})
             electionInstance.settleResults({from: accounts[0]})
             electionInstance.getWinner('Bukit Timah', {from: accounts[0]}) // placeholder region name
@@ -447,7 +447,7 @@ contract('Election', function(accounts) {
         
         await truffleAssert.reverts(
             async() => {
-                time.increasTo(electionInstance.getEndDate({from: accounts[0]}))
+                time.increaseTo(electionInstance.getEndDate({from: accounts[0]}))
                 electionInstance.endElection({from: accounts[0]})
                 electionInstance.getWinner('Bukit Timah', {from: accounts[0]}) // placeholder region name
             },
@@ -456,7 +456,7 @@ contract('Election', function(accounts) {
         
         await truffleAssert.reverts(
             async() => {
-                time.increasTo(electionInstance.getEndDate({from: accounts[0]}))
+                time.increaseTo(electionInstance.getEndDate({from: accounts[0]}))
                 electionInstance.endElection({from: accounts[0]})
                 electionInstance.settleResults({from: accounts[0]})
                 electionInstance.getWinner('Woodlands', {from: accounts[0]}) // placeholder region name
