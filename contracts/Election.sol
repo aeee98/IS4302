@@ -282,4 +282,12 @@ contract Election {
     function getVoteCount(uint16 _candidateId) public view alreadyEnded returns (uint256) {
         return votecounts[keccak256(abi.encodePacked(_candidateId))];
     }
-}
+
+    function getAllowedRegion(string memory _nric) public view returns (uint16) {
+        return voterRegions[keccak256(abi.encodePacked(_nric))];
+    }
+
+    function getAllowedVoterRegion(uint256 code) public view returns (uint16) {
+        return voteValidity[code];
+    }
+ }
