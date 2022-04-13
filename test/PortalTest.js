@@ -2,7 +2,7 @@ const _deploy_contracts = require("../migrations/2_deploy_contracts.js");
 const truffleAssert = require('truffle-assertions');
 var assert = require('assert');
 const { syncBuiltinESMExports } = require("module");
-const time = require('@openzeppelin/test-helpers'); // pip install --save-dev @openzeppelin/test-helpers
+const {BN, time} = require('@openzeppelin/test-helpers'); // pip install --save-dev @openzeppelin/test-helpers
 
 var ElectionPortal = artifacts.require("../contracts/ElectionPortal.sol");
 var ElectionAdministrator = artifacts.require("../contracts/ElectionAdministrator.sol");
@@ -322,6 +322,17 @@ contract('Election', function(accounts) {
     })
 
     it('Vote', async () => {
+
+        await truffleAssert.reverts(
+            electionInstance.vote('S1234567B', 'passwordB', 10, {from: accounts[0]}),
+            'Error, invalid candidateId'
+        );
+
+        await truffleAssert.reverts(
+            electionInstance.vote('S1234567A', 'passwordB', 1, {from: accounts[0]}),
+            'Error, authentication failure'
+        );
+
         let vote1 = await electionInstance.vote('S1234567A', 'passwordA', 1, {from: accounts[0]});
         let vote2 = await electionInstance.vote('S1234567B', 'passwordB', 1, {from: accounts[0]});
         let vote3 = await electionInstance.vote('S1234567C', 'passwordC', 1, {from: accounts[0]});
@@ -345,20 +356,9 @@ contract('Election', function(accounts) {
         truffleAssert.eventEmitted(vote10, 'VoteSucceeded');
 
         await truffleAssert.reverts(
-            electionInstance.vote('S1234567A', 'passwordB', 1, {from: accounts[0]}),
-            'Error, authentication failure'
-        );
-
-        await truffleAssert.reverts(
             electionInstance.vote('S1234567A', 'passwordA', 1, {from: accounts[0]}),
             'Has already voted'
         );
-
-        await truffleAssert.reverts(
-            electionInstance.vote('S1234567B', 'passwordB', 10, {from: accounts[0]}),
-            'Error, invalid candidateId'
-        );
-
     });
 
     it('End election', async() => {
