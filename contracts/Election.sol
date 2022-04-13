@@ -4,6 +4,12 @@ pragma solidity ^0.8.0;
 import "./ElectionAdministrator.sol";
 import "./util/StringUtils.sol";
 
+/** 
+ * @dev The Election  Contract contains the information of the particular election. This includes the ability to start and stop an election, 
+ * voters and regions that are available and also the ability to vote for the candidates.
+ * 
+ * In the current implementation, self-destruction is not possible to prevent exploitation.
+ */
 contract Election {
 
     ElectionAdministrator private administratorContract;
