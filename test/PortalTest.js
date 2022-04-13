@@ -200,53 +200,6 @@ contract('Election', function(accounts) {
 
     })
 
-    // WIP
-    it('Authenticate Voter', async () => {
-
-        let authenticateVoter1 = await electionInstance.authenticateVoter("S1234567A", "passwordA", {from: accounts[0]})
-
-    });
-
-    it('Vote', async () => {
-        
-        // test normal vote
-        let vote1 = await electionInstance.vote(electionInstance.getVoteCodes[0], 1, {from: accounts[0]})
-
-        assert.notStrictEqual(
-            vote1,
-            undefined,
-            "Failed to cast vote"
-        );
-
-        await truffleAssert.reverts(
-            async () => {
-                electionInstance.setVoteCodes(electionInstance.getVoteCodes().push(0));
-                electionInstance.vote(electionInstance.getVoteCodes[1], 1, {from: accounts[2]});
-            },
-            'Error, voteCode is not valid'
-        )
-
-        await truffleAssert.reverts(
-            electionInstance.vote(electionInstance.getVoteCodes[0], 1, {from: accounts[0]}),
-            'Error, vote has already been cast'
-        )
-
-        await truffleAssert.reverts(
-            electionInstance.vote(electionInstance.getVoteCodes[0], 10, {from: accounts[2]}),
-            'Error, invalid candidateId'
-        )
-
-        await truffleAssert.reverts(
-            async() => {
-                time.increaseTo(electionInstance.getEndDate())
-                electionInstance.endElection({from: accounts[0]})
-                electionInstance.vote(electionInstance.getVoteCodes[0], 10, {from: accounts[2]})
-            },
-            'Error, not available for voting'
-        )
-
-    });
-
     // adminOnly modifier is tested here and will not be tested in subsequent unit tests
     it('Change start date', async() => {
 
@@ -322,6 +275,44 @@ contract('Election', function(accounts) {
 
     })
 
+    it('Vote', async () => {
+        
+        // test normal vote
+        let vote1 = await electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordA', {from: accounts[0]}), 1, {from: accounts[0]})
+        
+        assert.notStrictEqual(
+            vote1,
+            undefined,
+            "Failed to cast vote"
+        );
+
+        await truffleAssert.reverts(
+            electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordB', {from: accounts[0]}), 1, {from: accounts[0]}),
+            'Error, authentication failure'
+        )
+
+        await truffleAssert.reverts(
+            electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordA', {from: accounts[0]}), 1, {from: accounts[0]}),
+            'Has already voted'
+        )
+
+        await truffleAssert.reverts(
+            electionInstance.vote(0, 1, {from: accounts[2]}),
+            'Error, voteCode is not valid'
+        )
+
+        await truffleAssert.reverts(
+            electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordA', {from: accounts[0]}), 1, {from: accounts[0]}),
+            'Error, vote has already been cast'
+        )
+
+        await truffleAssert.reverts(
+            electionInstance.vote(electionInstance.authenticateVoter('S1234567A', 'passwordA', {from: accounts[0]}), 10, {from: accounts[0]}),
+            'Error, invalid candidateId'
+        )
+
+    });
+
     it('End election', async() => {
 
         // election ended
@@ -344,6 +335,11 @@ contract('Election', function(accounts) {
         await truffleAssert.reverts(
             electionInstance.endElection({from: accounts[0]}),
             'Error, election has already ended'
+        )
+
+        await truffleAssert.reverts(
+            electionInstance.vote(electionInstance.authenticateVoter('S1234567B', 'passwordB', {from: accounts[0]}), 1, {from: accounts[0]}),
+            'Error, not available for voting'
         )
 
     });
