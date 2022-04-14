@@ -29,7 +29,7 @@ contract Election {
         uint16 id;
         string name;
         uint16 regionId;
-        string electionTitle;
+        string candidateCodeName;
         bool valid;
     }
 
@@ -37,7 +37,7 @@ contract Election {
         uint16 regionId;
         string name;
         uint16[] candidatesList;
-        string electionTitle;
+        string regionTitle;
         bool valid;
     }
 

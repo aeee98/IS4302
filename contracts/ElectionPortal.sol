@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 
 import "./Election.sol";
 import "./ElectionAdministrator.sol";
-import "./VotingRegions.sol";
 
 contract ElectionPortal {
     ElectionAdministrator private administratorContract;
