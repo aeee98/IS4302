@@ -105,16 +105,16 @@ contract Election {
         allowedsystems[pollsystem] = false;
     }
 
-    function addCandidate(string memory _name, uint16 _regionId, string memory _electionTitle) public adminOnly hasNotStarted {
+    function addCandidate(string memory _name, uint16 _regionId, string memory _candidateTitle) public adminOnly hasNotStarted {
         candidatesCount++;
-        candidates[candidatesCount] = Candidate(candidatesCount, _name, _regionId, _electionTitle, true);
+        candidates[candidatesCount] = Candidate(candidatesCount, _name, _regionId, _candidateTitle, true);
         regions[_regionId].candidatesList.push(candidatesCount);
     }
 
-    function addRegion(string memory _name, string memory _electionTitle) public adminOnly hasNotStarted {
+    function addRegion(string memory _name, string memory _regionTitle) public adminOnly hasNotStarted {
         uint16[] memory candidatesList;
         regionsCount++;
-        regions[regionsCount] = Region(regionsCount, _name, candidatesList, _electionTitle, true);
+        regions[regionsCount] = Region(regionsCount, _name, candidatesList, _regionTitle, true);
     }
 
 
