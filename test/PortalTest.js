@@ -14,7 +14,6 @@ contract("ElectionAdministrator", function(accounts) {
     before(async () => {
         ElectionAdministratorInstance = await ElectionAdministrator.deployed();
     });
-    console.log("Testing ElectionAdmin Contract");
 
     it("Test Admin Addition after deployment", async () => {
         let addAdmin = await ElectionAdministratorInstance.addAdministrator(accounts[2], {from: accounts[0]});
@@ -147,7 +146,6 @@ contract('Election', function(accounts) {
         electionInstance = await Election.deployed();
         electionPortalInstance = await ElectionPortal.deployed();
     });
-    console.log("Testing Election Contract");
 
     let addRegion1, addRegion2;
 
@@ -416,41 +414,12 @@ contract('Election', function(accounts) {
     });
 
     it('Get winner', async() => {
-
-        // election not yet ened
-        let getWinner1 = await electionInstance.getWinner({from: accounts[0]})
-        // results not yet settled, valid region
-        let getWinner2 = async() => {
-            time.increaseTo(electionInstance.getEndDate({from: accounts[0]}))
-            electionInstance.endElection({from: accounts[0]})
-            electionInstance.getWinner('Bukit Timah', {from: accounts[0]}) // placeholder region name
-        };
-        // results settled, invalid region
-        let getWinner3 = async() => {
-            time.increaseTo(electionInstance.getEndDate({from: accounts[0]}))
-            electionInstance.endElection({from: accounts[0]})
-            electionInstance.settleResults({from: accounts[0]})
-            electionInstance.getWinner('Woodlands', {from: accounts[0]}) // placeholder region name
-        };
-        // get winner
-        let getWinner4 = async() => {
-            time.increaseTo(electionInstance.getEndDate({from: accounts[0]}))
-            electionInstance.endElection({from: accounts[0]})
-            electionInstance.settleResults({from: accounts[0]})
-            electionInstance.getWinner('Bukit Timah', {from: accounts[0]}) // placeholder region name
-        };
-        
-        await truffleAssert.reverts(
-            electionInstance.getWinner('Woodlands', {from: accounts[0]}), // placeholder region name
-            'Region Name does not exist'
-        );
-
-        assert.notStrictEqual(
-            getWinner4,
-            undefined,
-            "Failed to get winner"
-        );
-
+        let getWinner2 = await electionInstance.getWinner('Bukit Timah', {from: accounts[0]}) // placeholder region name
+        //console.log(getWinner2);
+        truffleAssert.eventEmitted(getWinner2, "Winner", (ev) => { return ev.winner == "People's Action Party";}, "Invalid Region 1 Winner");
+        let getWinner3 = await electionInstance.getWinner('Woodlands', {from: accounts[0]}) // placeholder region name
+        //console.log(getWinner3);
+        truffleAssert.eventEmitted(getWinner3, "Winner", (ev) => { return ev.winner == "Tan Ah Beng"; }, "Invalid Region 2 Winner");
     });
 
 });

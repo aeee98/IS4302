@@ -54,6 +54,8 @@ contract Election {
     event VoteSucceeded();
     event ElectionWinner(string region, string candidate, uint256 votes);
     event RegionCheck(Region region);
+    event Results(string[][] results);
+    event Winner(string winner);
 
     //TODO: Handle Voting Process
 
@@ -248,17 +250,17 @@ contract Election {
     }
 
     //Gets winner of election
-    function settleResults() public adminOnly returns (string[][] memory) {
+    function settleResults() public adminOnly {
         require(hasEnded == true, "Result not available yet");
         require(results.length == 0, "Results already settled");
 
-        for (uint16 i = 0; i < regionsCount; i++) {
+        for (uint i = 1; i <= regionsCount; i++) {
             //Handle Results on a per region basis
             Region memory regionCheck = regions[i];
             uint maxCount = 0;
             uint winner = 0;
 
-            for (uint16 j = 0; j < regionCheck.candidatesList.length; j++) {
+            for (uint j = 0; j < regionCheck.candidatesList.length; j++) {
                 uint256 votecount =  votecounts[keccak256(abi.encodePacked(regionCheck.candidatesList[j]))];
                 if (votecount > maxCount) {
                     maxCount = votecount;
@@ -272,14 +274,15 @@ contract Election {
             results.push(added);
         }
 
-        return results;
+        emit Results(results);
     }
 
-    function getWinner(string memory _regionname) public view returns (string memory) {
+    function getWinner(string memory _regionname) public returns (string memory) {
         require(hasEnded, "Error, election has not ended yet");
         require(results.length > 0, "Results not set up yet");
-        for (uint16 i = 0; i < results.length; i++) {
+        for (uint i = 0; i < results.length; i++) {
             if (StringUtils.equal(_regionname, results[i][0])) {
+                emit Winner(results[i][1]);
                 return (results[i][1]);
             }
         }
